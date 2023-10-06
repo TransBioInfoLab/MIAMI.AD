@@ -1,0 +1,6 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+References*
+inst/shiny/Data/SQL_DBs/MIAMIAD.db

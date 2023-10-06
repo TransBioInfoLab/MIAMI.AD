@@ -1,0 +1,46 @@
+Package: MIAMI-AD
+Title: What the Package Does (One Line, Title Case)
+Version: 0.1.0
+Authors@R:
+    c(
+     person("David", "Lukacsovich", email = "david.lukacsovich@miami.edu", role = "cre"),
+     person("Dean", "Attali", email = "dean@attalitech.com", role = "aut")
+    )
+Description: What the package does (one paragraph).
+License: MIT + file LICENSE
+Depends:
+    R (>= 3.5.0)
+Imports:
+    DBI,
+    DT,
+    Gviz,
+    RSQLite,
+    bslib,
+    cicerone,
+    dplyr,
+    ggplot2,
+    ggrepel,
+    ggvenn,
+    grid,
+    gridExtra,
+    htmltools (>= 0.5.5),
+    htmlwidgets,
+    magrittr,
+    meta,
+    openxlsx,
+    rlang,
+    shiny (>= 1.6.0),
+    shinycssloaders,
+    shinyWidgets,
+    stringr,
+    tidyr
+Suggests:
+    devtools,
+    GenomicFeatures,
+    TxDb.Hsapiens.UCSC.hg19.knownGene,
+    TxDb.Hsapiens.UCSC.hg38.knownGene
+Remotes:
+    daattali/shinycssloaders
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3

@@ -1,0 +1,87 @@
+body {
+  padding-top: 50px;
+}
+
+img {
+  max-width: 100%;
+}
+
+.shiny-output-error-validation {
+  font-weight: bold;
+  font-size: 24px;
+}
+
+.nav-tabs {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.nav-link.active {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.nav-tabs {
+  --bs-nav-tabs-border-color: #2fa4e7;
+  --bs-nav-tabs-link-hover-border-color: #2fa4e7 #2fa4e7 #fff;
+  --bs-nav-tabs-link-active-border-color: #2fa4e7 #2fa4e7 #fff;
+}
+
+.long-logo {
+  margin-top: 14px;
+  padding-right: 10px;
+  padding-bottom: 10px;
+}
+
+.page-header {
+  text-align: center;
+  font-weight: bolder;
+}
+
+.input-header {
+  font-size: 1.5rem;
+  margin-bottom: 0.1rem;
+}
+
+.top-margin-s {
+  margin-top: 5px;
+}
+
+.top-margin-m {
+  margin-top: 20px;
+}
+
+.top-margin-l {
+  margin-top: 30px;
+}
+
+.tab-body {
+  width: 91.6667%;
+}
+
+.buttons-group {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.buttons-group button {
+  margin-right: 10px;
+}
+
+.twocols {
+  column-count: 2;
+}
+
+.flex {
+  display: flex;
+}
+
+.manhattan-plot {
+  text-align: center;
+  padding: 0 20px;
+}
+
+.tour-btn {
+  position: absolute;
+  margin-top: 10px;
+  width: 70px;
+}

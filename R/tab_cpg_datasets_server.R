@@ -1,0 +1,147 @@
+tab_cpg_datasets_server <- function(id, common, phenotype, select_cpgId) {
+  shiny::moduleServer(id, function(input, output, session) {
+    raw_data <- common$raw_data
+
+    shiny::observeEvent(input$genome_version, {
+      common$genome_version(input$genome_version)
+    })
+    shiny::observeEvent(common$genome_version(), {
+      shiny::updateSelectInput(
+        inputId = "genome_version", selected = common$genome_version())
+    })
+
+    # define tables from raw_data
+    df_labels <- raw_data$labels
+
+    # update choices based on selection
+    shiny::observeEvent(phenotype(),
+                 {
+                   select_phenotype <- phenotype()
+
+                   if (is.null(select_phenotype)){
+                     df_datasets(create_empty_dataframe(source=FALSE))
+                   } else {
+                     df_labels <- df_labels %>%
+                       dplyr::filter(.data$Phenotype %in% select_phenotype)
+
+                     update_datasets_table(df_datasets,
+                                           df_labels,
+                                           source = FALSE,
+                                           has_cpg = TRUE
+                     )
+                   }
+
+                 }, ignoreInit = FALSE, ignoreNULL = FALSE)
+
+    # Create reactive tables to store display
+    df_datasets <- create_empty_reactive_table(source = FALSE)
+
+    # Create reactive to store plotting data
+    df_toplot <- shiny::reactive({
+      # get all selectable datasets
+      df_datasets_full <- df_datasets()
+
+      # filter to selected datasets, and drop unneeded columns
+      df_toplot <- df_datasets_full %>%
+        dplyr::filter(.data$Select_Bool) %>%
+        dplyr::select(c(-"Select", -"Select_Bool"))
+
+      return (df_toplot)
+    })
+
+    # Clear plotting data
+    shiny::observeEvent(input$command_clear,
+                 {
+                   fill_plotting_table(df_datasets, selection=FALSE)
+                 }, ignoreInit = TRUE)
+
+    # Update Plotting Data
+    shiny::observeEvent(input$command_fill,
+                 {
+                   fill_plotting_table(df_datasets, selection=TRUE)
+
+                 }, ignoreInit = TRUE)
+
+    # Display All Datasets
+    output$data_selection_targets <- DT::renderDT({
+      shiny::validate(
+        shiny::need(
+          nrow(df_datasets()) > 0,
+          "Please select phenotypes on the left to display associated datasets."
+        )
+      )
+
+      # get dataframe
+      df_data <- df_datasets() %>%
+        dplyr::select(-"PMID_Excel", -"Select_Bool")
+
+      # get formatting
+      full_options <- list(
+        columnDefs=list(
+          list(className = 'dt-center', targets = 1:5)),
+        pageLength = 25,
+        autowidth = F,
+        language = list(
+          zeroRecords = paste0(
+            "No datasets available. - ",
+            "Please select phenotypes on the left to fill out this table.")))
+
+      # create datatable
+      DT::datatable(df_data,
+                rownames = FALSE,
+                escape = c(-5,-6),
+                selection = 'none',
+                options = full_options,
+                callback = htmlwidgets::JS(checkbox_js("data_selection_targets", session$ns, 6))) %>%
+        DT::formatStyle(columns = c('Dataset'), fontweight = 'bold',
+                    `text-align` = 'left')
+    }, server=FALSE)
+
+    # Display Selected Datasets
+    df_selection_dt <- shiny::reactive({
+      # get dataframe
+      df_data <- df_toplot() %>%
+        dplyr::select(-"PMID_Excel")
+
+      # get formatting
+      full_options <- list(columnDefs=list(
+        list(className = 'dt-center', targets = 1:4)),
+        autowidth=F,
+        language = list(
+          zeroRecords = paste0(
+            "No datasets available. - ",
+            "Please select datasets from the datasets table to fill out this table.")))
+
+      # create datatable
+      DT::datatable(df_data,
+                rownames = FALSE,
+                escape = c(-5),
+                selection = 'none',
+                options = full_options) %>%
+        DT::formatStyle(columns = c('Dataset'), fontweight = 'bold',
+                    `text-align` = 'left')
+    })
+
+    # Update plotting table when checkboxes are selected
+    shiny::observeEvent(input$data_selection_targets_cell_edit, {
+      # datatables are 0-indexed, and dataframes are 1-indexed
+      # since df_toplot is a dataframe, we need to add 1 to the column value
+      info <- input$data_selection_targets_cell_edit
+
+      # update the dataset
+      row <- info$row
+      col <- info$col + 1
+      value <- info$value
+      df <- df_datasets()
+      df[row,col] <- value
+
+      # update checkboxes
+      df$Select <- create_plotting_checkboxes(df$Select_Bool)
+
+      # update tables
+      df_datasets(df)
+    })
+
+    return(list(df_toplot = df_toplot, df_selection_dt = df_selection_dt))
+  })
+}
