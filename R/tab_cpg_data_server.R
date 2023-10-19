@@ -9,20 +9,6 @@ tab_cpg_data_server <- function(id, common, df_toplot, df_selection_dt, input_se
     cpg_mQTL <- raw_data$mQTL
     df_family <- raw_data$clocks
 
-    # Connect a reactive the command_data button
-    command_data <- shiny::reactiveVal(0)
-
-    # Increment it if the tab is changed to the data tab, or command_data is pressed
-    shiny::observeEvent(input$command_data, {
-      command_data(command_data() + 1)
-    }, ignoreInit = TRUE)
-
-    shiny::observeEvent(input$main_tabs,{
-      if (input$main_tabs == ns("tab_data")){
-        command_data(command_data() + 1)
-      }
-    }, ignoreInit = TRUE)
-
     output$data_selection_data <- DT::renderDT({
       df_selection_dt()
     })
@@ -157,14 +143,8 @@ tab_cpg_data_server <- function(id, common, df_toplot, df_selection_dt, input_se
 
     # Display Tables
     output$data_properties <- DT::renderDT({
-      # create dependence on input button
-      command_data()
-
-
-      # get isolated reactives and inputs
-      shiny::isolate({
-        df_cpg_targets <- df_cpg_targets()
-      })
+      # get reactives and inputs
+      df_cpg_targets <- df_cpg_targets()
 
       df_cpg_targets <- df_cpg_targets %>%
         dplyr::rename(`Blood-Brain comparison` = "London",
@@ -184,14 +164,8 @@ tab_cpg_data_server <- function(id, common, df_toplot, df_selection_dt, input_se
     })
 
     output$data_indiv <- DT::renderDT({
-      # create dependence on input button
-      command_data()
-
-
-      # get isolated reactives and inputs
-      shiny::isolate({
-        data_indiv_base <- data_indiv_base()
-      })
+      # get reactives and inputs
+      data_indiv_base <- data_indiv_base()
 
       data_indiv_base <- data_indiv_base %>%
         dplyr::mutate(pStat = .data$pValue,
@@ -212,13 +186,8 @@ tab_cpg_data_server <- function(id, common, df_toplot, df_selection_dt, input_se
     })
 
     output$data_epigenetic <- DT::renderDT({
-      # create dependence on input button
-      command_data()
-
-      # get isolated reactives and inputs
-      shiny::isolate({
-        data_epigenetic_show <- data_epigenetic_show()
-      })
+      # get reactives and inputs
+      data_epigenetic_show <- data_epigenetic_show()
 
       full_options <- list(columnDefs = list(
         list(className = 'dt-center', targets = "_all")),

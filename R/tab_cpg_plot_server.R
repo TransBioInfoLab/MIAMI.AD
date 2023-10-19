@@ -6,20 +6,6 @@ tab_cpg_plot_server <- function(id, common, df_toplot, df_cpg_stats, df_selectio
     # define tables from raw_data
     df_labels <- raw_data$labels
 
-    # Connect a shiny::reactive the command_plot button
-    command_plot <- shiny::reactiveVal(0)
-
-    # Increment it if the tab is changed to the plot tab, or command_plot is pressed
-    shiny::observeEvent(input$command_plot, {
-      command_plot(command_plot() + 1)
-    }, ignoreInit = TRUE)
-
-    shiny::observeEvent(input$main_tabs,{
-      if (input$main_tabs == ns("tab_plot")){
-        command_plot(command_plot() + 1)
-      }
-    }, ignoreInit = TRUE)
-
     output$data_selection_plot <- DT::renderDT({
       df_selection_dt()
     })
@@ -47,14 +33,9 @@ tab_cpg_plot_server <- function(id, common, df_toplot, df_cpg_stats, df_selectio
     })
 
     forest_plots_ls <- shiny::reactive({
-      # create dependence on input button
-      command_plot()
-
-      # get isolated shiny::reactives and inputs
-      shiny::isolate({
-        df_plot_forest <- df_plot_forest()
-        col_count <- input$plot_count
-      })
+      # get shiny reactives and inputs
+      df_plot_forest <- df_plot_forest()
+      col_count <- input$plot_count
 
       # if no data to plot, return an empty list
       if (nrow(df_plot_forest) == 0){

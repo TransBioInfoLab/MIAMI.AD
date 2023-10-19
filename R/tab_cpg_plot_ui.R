@@ -3,10 +3,6 @@ tab_cpg_plot_UI <- function(id) {
 
   shiny::div(
     class = "top-margin-m tab-body",
-    shiny::div(
-      class = "buttons-group",
-      lightButton(ns("command_plot"), "Refresh", width = "150px")
-    ),
     shiny::h4("Selected Datasets", class = "top-margin-m"),
     DT::DTOutput(ns("data_selection_plot")) %>% shinycssloaders::withSpinner(proxy.height = 150),
 

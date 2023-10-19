@@ -7,26 +7,12 @@ tab_epigenetic_data_server <- function(id, common, df_toplot, df_selection_dt, c
     # define tables from raw_data
     df_family <- raw_data$clocks
 
-    # Connect a reactive the command_data button
-    command_data <- shiny::reactiveVal(0)
-
-    # Increment it if the tab is changed to the data tab, or command_data is pressed
-    shiny::observeEvent(input$command_data, {
-      command_data(command_data() + 1)
-    }, ignoreInit = TRUE)
-
-    shiny::observeEvent(input$main_tabs,{
-      if (input$main_tabs == ns("tab_data")){
-        command_data(command_data() + 1)
-      }
-    }, ignoreInit = TRUE)
-
     output$data_selection_data <- DT::renderDT({
       df_selection_dt()
     })
 
     # Adjust slider based on number of clocks selected
-    shiny::observeEvent(command_data(), {
+    shiny::observeEvent(df_toplot(), {
       clock_count <- nrow(df_toplot())
       slider_count <- input$select_count
 
@@ -176,14 +162,9 @@ tab_epigenetic_data_server <- function(id, common, df_toplot, df_selection_dt, c
 
     # Display Tables
     output$data_cpgs <- DT::renderDT({
-      # create dependence on input button
-      command_data()
+      # get reactives and inputs
       input$select_count
-
-      # get isolated reactives and inputs
-      shiny::isolate({
-        data_cpg_show <- data_cpg_show()
-      })
+      data_cpg_show <- data_cpg_show()
 
       # create table
       full_options <- list(columnDefs=list(
@@ -196,14 +177,9 @@ tab_epigenetic_data_server <- function(id, common, df_toplot, df_selection_dt, c
       DT::datatable(data_cpg_show, rownames = FALSE, options = full_options)})
 
     output$data_definitions <- DT::renderDT({
-      # create dependence on input button
-      command_data()
+      # get reactives and inputs
       input$select_count
-
-      # get isolated reactives and inputs
-      shiny::isolate({
-        data_definitions_show <- data_definitions_show()
-      })
+      data_definitions_show <- data_definitions_show()
 
       # create table
       full_options <- list(columnDefs=list(

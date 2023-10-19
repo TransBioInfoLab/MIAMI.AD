@@ -9,20 +9,6 @@ tab_gene_data_server <- function(id, common, df_selection_dt, df_toplot, chr_pos
     df_labels <- raw_data$labels
     df_dmr <- raw_data$DMR
 
-    # Connect a reactive the command_data button
-    command_data <- shiny::reactiveVal(0)
-
-    # Increment it if the tab is changed to the data tab, or command_data is pressed
-    shiny::observeEvent(input$command_data, {
-      command_data(command_data() + 1)
-    }, ignoreInit = TRUE)
-
-    shiny::observeEvent(input$main_tabs,{
-      if (input$main_tabs == ns("tab_data")){
-        command_data(command_data() + 1)
-      }
-    }, ignoreInit = TRUE)
-
     # Change to CpG Panel to explore CpGs
     shiny::observeEvent(input$command_explore, {
       # get list of CpGs
@@ -149,13 +135,8 @@ tab_gene_data_server <- function(id, common, df_selection_dt, df_toplot, chr_pos
 
     # Display Tables
     output$data_dmrs <- DT::renderDT({
-      # create dependence on input button
-      command_data()
-
-      # get isolated reactives and inputs
-      shiny::isolate({
-        output_data_dmrs <- output_data_dmrs()
-      })
+      # get reactives and inputs
+      output_data_dmrs <- output_data_dmrs()
 
       full_options <- list(columnDefs = list(
         list(className = "dt-center", targets = "_all")),
@@ -171,13 +152,8 @@ tab_gene_data_server <- function(id, common, df_selection_dt, df_toplot, chr_pos
         output_data_dmrs, rownames = FALSE, options = full_options)})
 
     output$data_markers <- DT::renderDT({
-      # create dependence on input button
-      command_data()
-
-      # get isolated reactives and inputs
-      shiny::isolate({
-        df_cpg_stats <- df_cpg_stats()
-      })
+      # get reactives and inputs
+      df_cpg_stats <- df_cpg_stats()
 
       df_cpg_stats <- df_cpg_stats %>%
         dplyr::mutate(pStat = .data$pValue,

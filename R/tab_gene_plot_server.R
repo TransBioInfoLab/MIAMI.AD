@@ -2,20 +2,6 @@ tab_gene_plot_server <- function(id, common, df_selection_dt, df_cpg_stats, df_t
   shiny::moduleServer(id, function(input, output, session){
     ns <- shiny::NS(id)
 
-    # Connect a reactive the command_plot button
-    command_plot <- shiny::reactiveVal(0)
-
-    # Increment it if the tab is changed to the plot tab, or command_plot is pressed
-    shiny::observeEvent(input$command_plot, {
-      command_plot(command_plot() + 1)
-    }, ignoreInit = TRUE)
-
-    shiny::observeEvent(input$main_tabs,{
-      if (input$main_tabs == ns("tab_plot")){
-        command_plot(command_plot() + 1)
-      }
-    }, ignoreInit = TRUE)
-
     output$data_selection_plot <- DT::renderDT({
       df_selection_dt()
     })
@@ -49,17 +35,12 @@ tab_gene_plot_server <- function(id, common, df_selection_dt, df_cpg_stats, df_t
 
     # plot Data
     output$plot_chromosome <- shiny::renderPlot({
-      # create dependence on input button
-      command_plot()
-
-      # get isolated reactives and inputs
-      shiny::isolate({
-        gen <- common$genome_version()
-        chr_position_ls <- chr_position_ls()
-        select_chromosome <- chr_position_ls$chr
-        select_start <- chr_position_ls$start
-        select_end <- chr_position_ls$end
-      })
+      # get reactives and inputs
+      gen <- common$genome_version()
+      chr_position_ls <- chr_position_ls()
+      select_chromosome <- chr_position_ls$chr
+      select_start <- chr_position_ls$start
+      select_end <- chr_position_ls$end
 
       # plot chromosome
 
@@ -71,12 +52,8 @@ tab_gene_plot_server <- function(id, common, df_selection_dt, df_cpg_stats, df_t
     }, bg='transparent')
 
     manhattan_height <- shiny::reactive({# create dependence on input button
-      command_plot()
-
-      # get isolated reactives and inputs
-      shiny::isolate({
-        df_gene_manplot <- df_manhattan_plot()
-      })
+      # get reactives and inputs
+      df_gene_manplot <- df_manhattan_plot()
 
       if (dim(df_gene_manplot)[1] < 1){
         return (1)
@@ -86,17 +63,12 @@ tab_gene_plot_server <- function(id, common, df_selection_dt, df_cpg_stats, df_t
     })
 
     output$plot_manhattan <- shiny::renderPlot({
-      # create dependence on input button
-      command_plot()
-
-      # get isolated reactives and inputs
-      shiny::isolate({
-        df_gene_manplot <- df_manhattan_plot()
-        chr_position_ls <- chr_position_ls()
-        select_start <- chr_position_ls$start
-        select_end <- chr_position_ls$end
-        plot_threshold <- input$plot_threshold
-      })
+      # get reactives and inputs
+      df_gene_manplot <- df_manhattan_plot()
+      chr_position_ls <- chr_position_ls()
+      select_start <- chr_position_ls$start
+      select_end <- chr_position_ls$end
+      plot_threshold <- input$plot_threshold
 
       # Create manhattan plot
 
@@ -171,11 +143,7 @@ tab_gene_plot_server <- function(id, common, df_selection_dt, df_cpg_stats, df_t
     })
 
     track_height <- shiny::reactive({
-      input$command_plot
-
-      shiny::isolate({
-        tracks_list <- plot_track_data()
-      })
+      tracks_list <- plot_track_data()
       heights <- tracks_list$heights
 
       if (length(heights) == 0) {
@@ -186,24 +154,17 @@ tab_gene_plot_server <- function(id, common, df_selection_dt, df_cpg_stats, df_t
     })
 
     output$plot_track <- shiny::renderPlot({
-      # create dependence on input button
-      input$command_plot
-
       # If no tracks selected, we don't need to plot
-      shiny::isolate({
-        select_track <- select_track()
-      })
+      select_track <- select_track()
 
       shiny::req(select_track)
 
-      # get isolated reactives and inputs
-      shiny::isolate({
-        tracks_list <- plot_track_data()
-        chr_position_ls <- chr_position_ls()
-        select_chromosome <- chr_position_ls$chr
-        select_start <- chr_position_ls$start
-        select_end <- chr_position_ls$end
-      })
+      # get reactives and inputs
+      tracks_list <- plot_track_data()
+      chr_position_ls <- chr_position_ls()
+      select_chromosome <- chr_position_ls$chr
+      select_start <- chr_position_ls$start
+      select_end <- chr_position_ls$end
 
       tracks <- tracks_list$tracks
       titles <- tracks_list$titles

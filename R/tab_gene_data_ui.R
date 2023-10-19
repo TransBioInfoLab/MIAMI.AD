@@ -5,7 +5,6 @@ tab_gene_data_UI <- function(id) {
     class = "top-margin-m tab-body",
     shiny::div(
       class = "buttons-group",
-      lightButton(ns("command_data"), "Refresh", width = "150px"),
       shiny::downloadButton(
         ns("download_data"), "Download Tables", width = "150px")
     ),
