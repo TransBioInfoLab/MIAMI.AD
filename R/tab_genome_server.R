@@ -19,20 +19,18 @@ tab_genome_server <- function(id, common) {
     data_mod <- tab_genome_data_server(
       "data",
       common = common,
-      df_datasets = datasets_mod$df_datasets)
+      df_toplot = datasets_mod$df_toplot)
 
     tab_genome_plot_server(
       "plot",
       common = common,
-      df_datasets = datasets_mod$df_datasets,
-      df_toplot = data_mod$df_toplot,
+      df_toplot = datasets_mod$df_toplot,
       df_count = data_mod$df_count,
       df_selection_dt = data_mod$df_selection_dt)
 
     # show or hide tabs
     dataset_count <- shiny::reactive({
-      datasets_mod$df_datasets() %>%
-        dplyr::filter(.data$Select_Bool) %>%
+      datasets_mod$df_toplot() %>%
         nrow()
     })
 

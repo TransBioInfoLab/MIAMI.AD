@@ -1,61 +1,22 @@
-tab_genome_data_server <- function(id, common, df_datasets) {
+tab_genome_data_server <- function(id, common, df_toplot) {
   shiny::moduleServer(id, function(input, output, session) {
 
     raw_data <- common$raw_data
     cpg_text <- common$cpg_text
     df_labels <- raw_data$labels
 
-    # Create reactive to store plotting data
-    df_toplot <- create_empty_reactive_table(source = TRUE, metric = TRUE)
-
-    shiny::observeEvent(df_datasets(), {
-      # get reactive values
-      df_data <- df_datasets() %>%
-        dplyr::filter(.data$Select_Bool) %>%
-        dplyr::mutate(Target = paste0(.data$Dataset, " ; ", .data$Source))
-
-      df_top <- df_toplot() %>%
-        dplyr::mutate(Target = paste0(.data$Dataset, " ; ", .data$Source)) %>%
-        dplyr::filter(.data$Target %in% df_data$Target)
-
-      # add missing rows
-      df_top <- rbind(
-        df_top %>%
-          dplyr::select(-"Target"),
-        df_data %>%
-          dplyr::filter(!(.data$Target %in% df_top$Target)) %>%
-          dplyr::select(-"Select", -"Select_Bool", -"Target") %>%
-          dplyr::mutate(
-            Metric_Text = 'pValue', Metric = "",
-            Filter_Text = "< than", Filter = "",
-            Threshold = 1e-5)
-      )
-
-      # fix radio buttons
-      if (nrow(df_top) > 0){
-        df_top$Metric <- create_plotting_buttons(
-          df_top$Metric_Text, button = "Metric", name = "radiom"
-        )
-        df_top$Filter <- create_plotting_buttons(
-          df_top$Filter_Text, button = "Filter", name = "radiof"
-        )
-      }
-
-      # update reactive
-      df_toplot(df_top)
-    }, ignoreNULL = FALSE)
-
     df_selection_dt <- shiny::reactive({
       # get dataframe
       df_data <- df_toplot() %>%
-        dplyr::select(-"PMID_Excel", -"Metric_Text", -"Filter_Text")
+        dplyr::select(
+          -"PMID_Excel", -"Metric_Text", -"Filter_Text", -"Threshold")
 
       # get formatting
       full_options <- list(
         scrollX = TRUE,
         autowidth = TRUE,
         columnDefs = list(
-          list(className = "dt-center", targets = 1:8)),
+          list(className = "dt-center", targets = 1:6)),
         language = list(
           zeroRecords = paste0(
             "No datasets available. - ",
@@ -68,14 +29,9 @@ tab_genome_data_server <- function(id, common, df_datasets) {
       DT::datatable(
         df_data,
         rownames = FALSE,
-        escape = c(-5, -7, -8),
-        selection = list(mode = "single", target = "cell"),
-        editable = list(target = "cell", disable = list(columns = c(0:7))),
+        escape = -5,
+        editable = FALSE,
         options = full_options,
-        callback = htmlwidgets::JS(
-          radio_js(
-            "data_selection_select", session$ns, columns = c(8, 10),
-            labels = c("radiom", "radiof"))),
         class = "display nowrap"
       ) %>%
         DT::formatStyle(columns = c("Dataset"), fontweight = "bold",
@@ -222,7 +178,7 @@ tab_genome_data_server <- function(id, common, df_datasets) {
 
       # create table
       DT::datatable(df_mann_show, rownames = FALSE, options = full_options)
-    }) %>% shiny::bindEvent(input$command_data, df_datasets())
+    })
 
     output$download_data <- shiny::downloadHandler(
       filename = function(){"CpG Statistics.xlsx"},
@@ -250,21 +206,6 @@ tab_genome_data_server <- function(id, common, df_datasets) {
       df_selection_dt()
     }, server = FALSE)
 
-    # update datatable when threshold is changed
-    shiny::observeEvent(input$data_selection_data_cell_edit, {
-      info <- input$data_selection_data_cell_edit
-
-      # get dataset and update information
-      df <- df_toplot()
-      row <- info$row
-      col <- info$col + 4
-      value <- info$value
-      df[row,col] <- value
-
-      # update tables
-      df_toplot(df)
-    })
-
     shiny::observeEvent(input$command_explore, {
       # get list of CpGs
       df_cpg <- df_mann_show()
@@ -288,32 +229,8 @@ tab_genome_data_server <- function(id, common, df_datasets) {
       cpg_text(cpgs)
     })
 
-    # update datatable when radio button is pressed
-    shiny::observeEvent(input$data_selection_select_cell_edit, {
-      info <- input$data_selection_select_cell_edit
-
-      # get dataset and update information
-      df <- df_toplot()
-      row <- info$row
-      col <- info$col
-      value <- info$value
-      df[row,col] <- value
-
-      # see if we have to update radio buttons
-      df$Metric <- create_plotting_buttons(
-        df$Metric_Text, button = "Metric", name = "radiom"
-        )
-      df$Filter <- create_plotting_buttons(
-        df$Filter_Text, button = "Filter", name = "radiof"
-      )
-
-      # update tables
-      df_toplot(df)
-    })
-
     return(list(
       df_count = df_count,
-      df_toplot = df_toplot,
       df_selection_dt = df_selection_dt
     ))
 

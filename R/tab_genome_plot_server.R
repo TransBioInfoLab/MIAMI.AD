@@ -1,4 +1,4 @@
-tab_genome_plot_server <- function(id, common, df_datasets, df_toplot, df_count, df_selection_dt) {
+tab_genome_plot_server <- function(id, common, df_toplot, df_count, df_selection_dt) {
   shiny::moduleServer(id, function(input, output, session) {
 
     # Create Plotting Data
@@ -12,7 +12,7 @@ tab_genome_plot_server <- function(id, common, df_datasets, df_toplot, df_count,
       }
 
       return (500)
-    }) %>% shiny::bindEvent(input$command_plot, df_datasets())
+    })
 
     # Plot Data
     output$plot_venn <- shiny::renderPlot({
@@ -66,8 +66,7 @@ tab_genome_plot_server <- function(id, common, df_datasets, df_toplot, df_count,
       p <- fix_venn_label_positions(p, length(venn_names), method = "genomewide")
 
       return (p)
-    }, height = function() venn_height(), background = "transparent") %>%
-      shiny::bindEvent(input$command_plot, df_datasets())
+    }, height = function() venn_height(), background = "transparent")
 
     output$plot_manhattan <- shiny::renderUI({
       df_plot_table <- df_toplot()
@@ -113,7 +112,7 @@ tab_genome_plot_server <- function(id, common, df_datasets, df_toplot, df_count,
       })
 
       return (plot_manhattan_list)
-    }) %>% shiny::bindEvent(input$command_plot, df_datasets())
+    })
 
     output$data_selection_plot <- DT::renderDT({
       df_selection_dt()
