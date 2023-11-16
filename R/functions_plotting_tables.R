@@ -173,12 +173,14 @@ update_datasets_table <- function(
     df_data_update$Select_Bool)
   
   # Update Radio Buttons
-  df_data_update$Metric <- create_plotting_buttons(
-    df_data_update$Metric_Text, button = "Metric", name = "radiom"
-  )
-  df_data_update$Filter <- create_plotting_buttons(
-    df_data_update$Filter_Text, button = "Filter", name = "radiof"
-  )
+  if (metric) {
+    df_data_update$Metric <- create_plotting_buttons(
+      df_data_update$Metric_Text, button = "Metric", name = "radiom"
+    )
+    df_data_update$Filter <- create_plotting_buttons(
+      df_data_update$Filter_Text, button = "Filter", name = "radiof"
+    )    
+  }
 
   # update dataset table
   df_datasets(df_data_update)

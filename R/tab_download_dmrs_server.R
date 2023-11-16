@@ -39,6 +39,7 @@ tab_download_dmrs_server <- function(id, common, phenotype) {
       # get dataframe
       df_data <- df_datasets() %>%
         dplyr::select(-"PMID_Excel", -"Select_Bool", -"Select")
+      
       if (nrow(df_data) > 0){
         df_data$Download <- create_download_link(df_data$Dataset,
                                                  df_data$Source,

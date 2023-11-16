@@ -79,20 +79,22 @@ tab_cpg_datasets_server <- function(id, common, phenotype, select_cpgId) {
       full_options <- list(
         columnDefs=list(
           list(className = 'dt-center', targets = 1:5)),
-        pageLength = 25,
-        autowidth = F,
+        stateSave = TRUE,
+        pageLength = 100,
+        autowidth = FALSE,
         language = list(
           zeroRecords = paste0(
             "No datasets available. - ",
             "Please select phenotypes on the left to fill out this table.")))
 
       # create datatable
-      DT::datatable(df_data,
-                rownames = FALSE,
-                escape = c(-5,-6),
-                selection = 'none',
-                options = full_options,
-                callback = htmlwidgets::JS(checkbox_js("data_selection_targets", session$ns, 6))) %>%
+      DT::datatable(
+        df_data,
+        rownames = FALSE,
+        escape = c(-5,-6),
+        selection = 'none',
+        options = full_options,
+        callback = htmlwidgets::JS(checkbox_js("data_selection_targets", session$ns, 6))) %>%
         DT::formatStyle(columns = c('Dataset'), fontweight = 'bold',
                     `text-align` = 'left')
     }, server=FALSE)

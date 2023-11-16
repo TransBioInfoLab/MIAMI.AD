@@ -86,7 +86,7 @@ tab_gene_datasets_server <- function(id, common, phenotype) {
       full_options <- list(
         columnDefs = list(
           list(className = "dt-center", targets = 1:6)),
-        pageLength = 50,
+        pageLength = 100,
         autowidth = FALSE,
         language = list(
           zeroRecords = paste0(

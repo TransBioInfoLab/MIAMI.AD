@@ -75,7 +75,7 @@ tab_cpg_data_server <- function(id, common, df_toplot, df_selection_dt, input_se
           dplyr::mutate(mQTL = create_mQTL_Link(.data$cpg, cpg_mQTL)) %>%
           dplyr::mutate(London = create_London_Link(.data$cpg, cpg_London))
       }
-
+      
       return (df_cpg_targets)
     })
 

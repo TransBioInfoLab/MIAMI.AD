@@ -48,7 +48,7 @@ tab_gene_data_server <- function(id, common, df_selection_dt, df_toplot, chr_pos
         dplyr::filter(.data$start <= select_end) %>%
         dplyr::filter(.data$dataset %in% selected_datasets) %>%
         dplyr::select(
-          "DMR", "dataset", "phenotype", "direction",
+          "DMR", "dataset", sample_group = "source", "phenotype", "direction",
           "nProbes", "pValue", "adj.pValue") %>%
         dplyr::mutate(pValue = format_pvalues_column(.data$pValue),
                       adj.pValue = format_pvalues_column(.data$adj.pValue),
