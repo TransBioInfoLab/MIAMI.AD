@@ -1,4 +1,4 @@
-#' Run the MIAMI-AD app
+#' Run the MIAMI.AD app
 #' @export
 run_app <- function() {
   ## app.R ##

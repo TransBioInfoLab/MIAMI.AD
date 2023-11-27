@@ -122,7 +122,7 @@ tab_genome_datasets_server <- function(id, common, phenotype) {
     }, ignoreNULL = FALSE)
     
     # Create plotting reference table
-    df_toplot <- reactive({
+    df_toplot <- shiny::reactive({
       df_toplot <- df_datasets() %>%
         dplyr::filter(.data$Select_Bool) %>%
         dplyr::select(
