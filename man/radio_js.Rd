@@ -8,8 +8,8 @@ returns information when selected}
 radio_js(
   dtid = data.frame(),
   ns = shiny::NS(NULL),
-  columns = c(1, 2),
-  labels = c("radiob", "radioa")
+  column = 1,
+  label = "radiob"
 )
 }
 \arguments{
@@ -17,9 +17,9 @@ radio_js(
 
 \item{ns}{The NS function to add the shiny module id to the label}
 
-\item{columns}{the columns of the dataframe corresponding to the checkboxes}
+\item{column}{the columns of the dataframe corresponding to the checkboxes}
 
-\item{labels}{the names used for the checkboxes}
+\item{label}{the names used for the checkboxes}
 }
 \description{
 create the javascript code for a radio-button in a data frame so that it

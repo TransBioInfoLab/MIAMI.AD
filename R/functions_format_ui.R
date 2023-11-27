@@ -56,7 +56,7 @@ create_cpg_conditional_input <- function(ns = shiny::NS(NULL), id = "") {
         "input['%s-input_type'] == 'manual'", id),
       shiny::textInput(
         inputId = ns("select_cpgId"),
-        label = shiny::tags$b("Paste a list of comma-separated CpGs"),
+        label = shiny::tags$b("Paste a list of comma or space-separated CpGs"),
         value = "",
         placeholder = "Type a list of CpGs"
       ),

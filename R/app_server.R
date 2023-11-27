@@ -20,7 +20,6 @@ create_server_page <- function(raw_data) {
     tab_cpg_server("cpg_tab", common = common)
     tab_epigenetic_server("epigenetic_tab", common = common)
     tab_download_server("download_tab", common = common)
-    tab_about_server("about_tab")
 
     # Call Tab Tour Functions
     tab_gene_Tour("gene_tab")

@@ -2,10 +2,10 @@
 % Please edit documentation in R/run_app.R
 \name{run_app}
 \alias{run_app}
-\title{Run the MIAMIAD app}
+\title{Run the MIAMI-AD app}
 \usage{
 run_app()
 }
 \description{
-Run the MIAMIAD app
+Run the MIAMI-AD app
 }
