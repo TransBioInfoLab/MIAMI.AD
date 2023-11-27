@@ -2,7 +2,7 @@
 ## Running the Server
 
 # Define Directory Locations
-dir_ref <- function() system.file("shiny", "Data", package = "MIAMI-AD")
+dir_ref <- function() system.file("shiny", "Data", package = "MIAMI.AD")
 dir_summary <- function() file.path(dir_ref(), "Tables")
 dir_track <- function() file.path(dir_ref(), "Tracks")
 

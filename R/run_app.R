@@ -4,11 +4,11 @@ run_app <- function() {
   ## app.R ##
   shiny::addResourcePath(
     prefix = "www",
-    directoryPath = system.file("shiny", "www", package = "MIAMI-AD")
+    directoryPath = system.file("shiny", "www", package = "MIAMI.AD")
   )
   shiny::addResourcePath(
     prefix = "Plots",
-    directoryPath = system.file("shiny", "Plots", package = "MIAMI-AD")
+    directoryPath = system.file("shiny", "Plots", package = "MIAMI.AD")
     )
 
   # run app
