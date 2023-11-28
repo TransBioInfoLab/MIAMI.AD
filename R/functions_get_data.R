@@ -134,9 +134,11 @@ validation_position_inputs <- function(
 #'
 #' @param query_text the SQL query that we will pass
 scan_sql_query <- function(query_text = "") {
+  work_dir <- getwd()
+  data_dir <- file.path(work_dir, "inst", "shiny", "Data")
   conn_db <- DBI::dbConnect(
     RSQLite::SQLite(),
-    file.path(dir_ref(), "SQL_DBs/MIAMIAD.db")
+    file.path(data_dir, "SQL_DBs/MIAMIAD.db")
   )
 
   on.exit(DBI::dbDisconnect(conn_db))
