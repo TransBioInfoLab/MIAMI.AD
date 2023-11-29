@@ -1,4 +1,4 @@
-tab_cpg_datasets_server <- function(id, common, phenotype, select_cpgId) {
+tab_cpg_datasets_server <- function(id, common, phenotype) {
   shiny::moduleServer(id, function(input, output, session) {
     raw_data <- common$raw_data
 

@@ -45,8 +45,7 @@ tab_cpg_server <- function(id, common) {
     datasets_mod <- tab_cpg_datasets_server(
       "datasets",
       common = common,
-      phenotype = shiny::reactive(input$select_phenotype),
-      select_cpgId = shiny::reactive(input$select_cpgId))
+      phenotype = shiny::reactive(input$select_phenotype))
 
     data_mod <- tab_cpg_data_server(
       "data",
