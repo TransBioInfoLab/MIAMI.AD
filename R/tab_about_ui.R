@@ -78,7 +78,13 @@ tab_about_UI <- function(id) {
       shiny::tags$p("Lukacsovich D et al. (2023) MIAMI-AD (Methylation ",
         "in Aging and Methylation in AD): an integrative ",
         "atlas of DNA methylation across sex, aging, and ",
-        "Alzheimer's disease. ", shiny::em("bioRxiv ")),
+        "Alzheimer's disease. ",
+        tags$a(
+          href = "https://www.medrxiv.org/content/10.1101/2023.12.04.23299412v1",
+          shiny::em("bioRxiv "),
+          target="_blank"
+        )
+        ),
       shiny::h3(shiny::tags$b("3. Included Studies")),
       shiny::tags$p("MIAMI-AD included studies that met two main ",
         "criteria: (1) having more than 100 total subjects and (2) conducting",
