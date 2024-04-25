@@ -102,8 +102,12 @@ create_genome_version_input <- function(ns = shiny::NS(NULL), tour = TRUE) {
 #'
 #' @param labels The options to show
 #' @param ns Shiny namespace
+#' @param two_col whether to have the options in two columns (TRUE) or one
+#'   column (FALSE)
 #' @param tour Whether or not to wrap a tour container around the input
-create_phenotype_input <- function(labels, ns = shiny::NS(NULL), tour = TRUE) {
+create_phenotype_input <- function(
+    labels, ns = shiny::NS(NULL), two_col = FALSE, tour = TRUE
+) {
   tag <- shiny::checkboxGroupInput(
     inputId = ns("select_phenotype"),
     label = shiny::h2(class = "input-header", "Phenotype"),
@@ -111,7 +115,11 @@ create_phenotype_input <- function(labels, ns = shiny::NS(NULL), tour = TRUE) {
     choices = sort(unique(labels)),
     selected = NULL,
     width = "100%"
-  ) %>% twocols()
+  )
+  
+  if (two_col) {
+    tag <- twocols(tag)
+  }
 
   if (tour) {
     shiny::div(
