@@ -21,6 +21,12 @@ tab_download_UI <- function(id, df_labels, df_family) {
           ns,
           preselected = TRUE,
           tour = TRUE
+        ),
+        shiny::br(),
+        shiny::actionButton(
+          ns("command_download"),
+          "Download Selected",
+          width = "200px"
         )
       ),
 
