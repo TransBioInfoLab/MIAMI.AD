@@ -4,12 +4,20 @@
 \alias{create_phenotype_input}
 \title{Create the phenotype selector input}
 \usage{
-create_phenotype_input(labels, ns = shiny::NS(NULL), tour = TRUE)
+create_phenotype_input(
+  labels,
+  ns = shiny::NS(NULL),
+  two_col = FALSE,
+  tour = TRUE
+)
 }
 \arguments{
 \item{labels}{The options to show}
 
 \item{ns}{Shiny namespace}
+
+\item{two_col}{whether to have the options in two columns (TRUE) or one
+column (FALSE)}
 
 \item{tour}{Whether or not to wrap a tour container around the input}
 }

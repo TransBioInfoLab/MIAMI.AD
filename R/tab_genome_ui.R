@@ -2,7 +2,7 @@ tab_genome_UI <- function(id, df_labels) {
   ns <- shiny::NS(id)
 
   shiny::tagList(
-    primaryButton(ns("tour_select"), "Tour", class = "tour-btn btn-sm"),
+    primaryButton(ns("tour_select"), "Start Tutorial", class = "tour-btn btn-sm"),
 
     shiny::h1(
       class = "page-header",
