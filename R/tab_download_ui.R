@@ -16,7 +16,12 @@ tab_download_UI <- function(id, df_labels, df_family) {
         width = 3,
         create_genome_version_input(ns, tour = TRUE),
         shiny::br(),
-        create_phenotype_input(df_labels$Phenotype, ns, tour = TRUE)
+        create_phenotype_input(
+          df_labels$Phenotype,
+          ns,
+          preselected = TRUE,
+          tour = TRUE
+        )
       ),
 
       shiny::mainPanel(

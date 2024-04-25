@@ -7,6 +7,7 @@
 create_phenotype_input(
   labels,
   ns = shiny::NS(NULL),
+  preselected = FALSE,
   two_col = FALSE,
   tour = TRUE
 )
@@ -15,6 +16,8 @@ create_phenotype_input(
 \item{labels}{The options to show}
 
 \item{ns}{Shiny namespace}
+
+\item{preselected}{whether to have the phenotypes pre-selected or not}
 
 \item{two_col}{whether to have the options in two columns (TRUE) or one
 column (FALSE)}

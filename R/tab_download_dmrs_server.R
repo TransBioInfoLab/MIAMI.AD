@@ -38,7 +38,7 @@ tab_download_dmrs_server <- function(id, common, phenotype) {
 
       # get dataframe
       df_data <- df_datasets() %>%
-        dplyr::select(-"PMID_Excel", -"Select_Bool", -"Select")
+        dplyr::select(-"PMID_Excel", -"Select_Bool")
       
       if (nrow(df_data) > 0){
         df_data$Download <- create_download_link(df_data$Dataset,
@@ -79,12 +79,34 @@ tab_download_dmrs_server <- function(id, common, phenotype) {
       DT::datatable(
         df_data,
         rownames = FALSE,
-        escape = c(-5,-7),
+        escape = c(-5, -7, -8),
         selection = "none",
-        options = full_options
+        options = full_options,
+        callback = htmlwidgets::JS(checkbox_js("dmr_selection_targets", session$ns, 7))
       ) %>%
         DT::formatStyle(columns = c('Dataset'), fontweight = 'bold',
                     `text-align` = 'left')
     }, server = FALSE)
+    
+    # Update download selection
+    shiny::observeEvent(input$dmr_selection_targets_cell_edit, {
+      # datatables are 0-indexed, and dataframes are 1-indexed
+      # since df_toplot is a dataframe, we need to add 1 to the column value
+      info <- input$dmr_selection_targets_cell_edit
+      
+      # update the dataset
+      row <- info$row
+      col <- info$col + 1
+      value <- info$value
+      
+      df <- df_datasets()
+      df[row,col] <- value
+      
+      # update checkboxes
+      df$Select <- create_plotting_checkboxes(df$Select_Bool)
+      
+      # update tables
+      df_datasets(df)
+    })
   })
 }

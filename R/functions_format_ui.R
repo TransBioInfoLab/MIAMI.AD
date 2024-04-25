@@ -102,18 +102,29 @@ create_genome_version_input <- function(ns = shiny::NS(NULL), tour = TRUE) {
 #'
 #' @param labels The options to show
 #' @param ns Shiny namespace
+#' @param preselected whether to have the phenotypes pre-selected or not
 #' @param two_col whether to have the options in two columns (TRUE) or one
 #'   column (FALSE)
 #' @param tour Whether or not to wrap a tour container around the input
 create_phenotype_input <- function(
-    labels, ns = shiny::NS(NULL), two_col = FALSE, tour = TRUE
+    labels,
+    ns = shiny::NS(NULL),
+    preselected = FALSE,
+    two_col = FALSE,
+    tour = TRUE
 ) {
+  if (preselected) {
+    selected <- sort(unique(labels))
+  } else {
+    selected <- NULL
+  }
+  
   tag <- shiny::checkboxGroupInput(
     inputId = ns("select_phenotype"),
     label = shiny::h2(class = "input-header", "Phenotype"),
     inline = FALSE,
     choices = sort(unique(labels)),
-    selected = NULL,
+    selected = selected,
     width = "100%"
   )
   
