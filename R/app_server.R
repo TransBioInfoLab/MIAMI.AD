@@ -15,6 +15,7 @@ create_server_page <- function(raw_data) {
 
     # Call Tab Server Functions
     tab_about_server("about_tab", common = common)
+    tab_tutorial_server("tutorial_tab", common = common)
     tab_genome_server("genome_tab", common = common)
     tab_gene_server("gene_tab", common = common)
     tab_cpg_server("cpg_tab", common = common)

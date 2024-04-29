@@ -21,6 +21,11 @@ create_ui_page <- function(raw_data) {
       tab_about_UI("about_tab")
     ),
     shiny::tabPanel(
+      "Tutorial",
+      value = "tutorial_page_tab",
+      tab_tutorial_UI("tutorial_tab")
+    ),
+    shiny::tabPanel(
       "Genome-wide Query",
       value = "genome_query_tab",
       tab_genome_UI("genome_tab", df_labels = df_labels)

@@ -79,10 +79,10 @@ tab_about_UI <- function(id) {
         "in Aging and Methylation in AD): an integrative ",
         "atlas of DNA methylation across sex, aging, and ",
         "Alzheimer's disease. ",
-        tags$a(
+        shiny::tags$a(
           href = "https://www.medrxiv.org/content/10.1101/2023.12.04.23299412v1",
           shiny::em("bioRxiv "),
-          target="_blank"
+          target = "_blank"
         )
         ),
       shiny::h3(shiny::tags$b("3. Included Studies")),
