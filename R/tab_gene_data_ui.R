@@ -15,6 +15,8 @@ tab_gene_data_UI <- function(id) {
     shiny::h4("DMRs", class = "top-margin-m"),
     DT::DTOutput(ns("data_dmrs")) %>%
       shinycssloaders::withSpinner(proxy.height = 150),
+    shiny::h4("Multi-omics and Multi-tissue Resources", class = "top-magin-m"),
+    shiny::actionButton(ns("command_cpgs"), "eFORGE CpGs"),
 
     shiny::div(
       class = "top-margin-s flex",

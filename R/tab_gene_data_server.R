@@ -1,4 +1,6 @@
-tab_gene_data_server <- function(id, common, df_selection_dt, df_toplot, chr_position_ls) {
+tab_gene_data_server <- function(
+    id, common, df_selection_dt, df_toplot, chr_position_ls, selected_gene
+) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- shiny::NS(id)
 

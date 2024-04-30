@@ -20,8 +20,8 @@ tab_download_epigenetic_server <- function(id, common) {
       # get dataframe
       df_data <- df_epigenetic() %>%
         dplyr::select(-"PMID_Excel", -"Select_Bool")
-      df_data$Download <- create_download_link(
-        df_data$Epigenetic_Clock, "", df_downloads, method = "Epigenetic")
+      # df_data$Download <- create_download_link(
+      #   df_data$Epigenetic_Clock, "", df_downloads, method = "Epigenetic")
 
       # get formatting
       full_options <- list(
@@ -34,7 +34,7 @@ tab_download_epigenetic_server <- function(id, common) {
       DT::datatable(
         df_data,
         rownames = FALSE,
-        escape = c(-5, -6, -7),
+        escape = c(-5, -6),
         selection = "none",
         options = full_options,
         callback = htmlwidgets::JS(checkbox_js("cpg_selection_targets", session$ns, 6))
@@ -63,5 +63,71 @@ tab_download_epigenetic_server <- function(id, common) {
       # update tables
       df_epigenetic(df)
     })
+    
+    # Clear download selection
+    shiny::observeEvent(input$command_clear,
+                        {
+                          fill_plotting_table(df_epigenetic, selection=FALSE)
+                        }, ignoreInit = TRUE)
+    
+    # Update download selection
+    shiny::observeEvent(input$command_fill,
+                        {
+                          fill_plotting_table(df_epigenetic, selection=TRUE)
+                          
+                        }, ignoreInit = TRUE)
+    
+    # Start Data Download
+    output$download_data <- shiny::downloadHandler(
+      filename = function(){"Epigenetic Data.xlsx"},
+      
+      content = function(filename) {
+        df_data <- df_epigenetic() %>%
+          dplyr::filter(.data$Select_Bool)
+        df_labels <- df_data %>%
+          dplyr::select(-"PMID", -"Select_Bool", -"Select") %>%
+          dplyr::rename(PMID = "PMID_Excel")
+        
+        wb <- openxlsx::createWorkbook()
+        
+        if (nrow(df_data) == 0) {
+          return(openxlsx::saveWorkbook(wb, file = filename))
+        }
+        
+        df_stats <- common$raw_data$clocks %>%
+          dplyr::filter(.data$Family %in% df_data$Epigenetic_Clock)
+        df_pos <- get_cpg_sql_positions(
+          unique(df_stats$cpg),
+          common$genome_version()
+        )
+        df_stats <- df_stats %>%
+          dplyr::left_join(df_pos, by = "cpg")
+        
+        for (family in unique(df_stats$Family)) {
+          df_epi <- df_stats %>%
+            dplyr::filter(.data$Family == family) %>%
+            dplyr::select("cpg", "chr", "pos", "Coefficient")
+          
+          openxlsx::addWorksheet(wb, family)
+          openxlsx::writeData(
+            wb = wb,
+            sheet = family,
+            x = df_labels %>% dplyr::filter(.data$Epigenetic_Clock == family),
+            startCol = 1,
+            startRow = 1
+          )
+          openxlsx::writeData(
+            wb = wb,
+            sheet = family,
+            x = df_epi,
+            startCol = 1,
+            startRow = 4
+          )
+        }
+        
+        openxlsx::saveWorkbook(wb, file = filename)
+      },
+      contentType = "file/xlsx"
+    )
   })
 }

@@ -148,13 +148,64 @@ scan_sql_query <- function(query_text = "") {
   return(df_out)
 }
 
+#' Run an SQLite scan to get all of the cpg statistics of a given dataset/source list
+#'
+#' @param datasets a list of datasets to search in
+#' @param sources the sources matching to each dataset to do the search in, or an empty list of the entire dataset(s) are searched
+scan_cpg_sql_download_statistics <- function(
+    datasets = character(), sources = character()
+) {
+  # write a query
+  intro_query_text <- paste0(
+    "SELECT cpg, dataset, sample_group, statistics_value, pvalue, fdr ",
+    "FROM cpg_statistics ",
+    "WHERE"
+  )
+  
+  dataset_query_text <- "( "
+  
+  for (index in 1:length(datasets)) {
+    dataset <- datasets[[index]]
+    source <- sources[[index]]
+    
+    if (index > 1){
+      dataset_query_text <- paste0(dataset_query_text, " OR ")
+    }
+    
+    dataset_query_text <- paste0(
+      dataset_query_text,
+      "(dataset = '", dataset, "'",
+      " AND sample_group = '", source, "'",
+      ")"
+    )
+  }
+  
+  dataset_query_text <- paste0(
+    dataset_query_text,
+    " )"
+  )
+  
+  query_text <- paste0(
+    intro_query_text,
+    "( ",
+    dataset_query_text,
+    " );"
+  )
+  
+  # run query
+  df_pos <- scan_sql_query(query_text)
+  
+  return(df_pos)
+}
+
 #' Run an SQLite scan to get all of the statistics of a list of cpgs in a given dataset/source list
 #'
 #' @param cpgs a list of cpgs to search
 #' @param datasets a list of datasets to search in
 #' @param sources the sources matching to each dataset to do the search in, or an empty list of the entire dataset(s) are searched
 scan_cpg_sql_statistics <- function(
-    cpgs = character(), datasets = character(), sources = character()) {
+    cpgs = character(), datasets = character(), sources = character()
+) {
   # get cpg and dataset/source statistics
 
   # write a query
@@ -326,13 +377,23 @@ scan_cpg_sql_positions <- function(
   # define the target table
   table_name <- paste0("cpg_positions_", genome_version)
 
-  # write a query
-  query_text <- paste0("SELECT * FROM ", table_name,
-                       " WHERE cpg IN ('",
-                       paste0(cpgs, collapse="', '"), "');")
-
-  # run query
-  df_pos <- scan_sql_query(query_text)
+  if (length(cpgs) < 1000) {
+    # write a query
+    query_text <- paste0("SELECT * FROM ", table_name,
+                         " WHERE cpg IN ('",
+                         paste0(cpgs, collapse="', '"), "');")
+    
+    # run query
+    df_pos <- scan_sql_query(query_text)
+  } else {
+    # write a query
+    query_text <- paste0("SELECT * FROM ", table_name, ";")
+    
+    # run query
+    df_pos <- scan_sql_query(query_text)
+    df_pos <- df_pos %>%
+      dplyr::filter(.data$cpg %in% cpgs)
+  }
 
   return(df_pos)
 }
@@ -389,13 +450,30 @@ scan_cpg_filtered_positions <- function(
 #' @param datasets a list of datasets where we are interested in the cpgs
 #' @param sources either empty, or a list of sources corresponding to each dataset
 get_cpg_sql_statistics <- function(
-    cpgs = character(), datasets = character(), sources=character()) {
+    cpgs = character(), datasets = character(), sources = character()
+) {
   # run validate
   validate_cpg_search(cpgs, datasets, sources)
 
   # read data from the database
   df_cpg <- scan_cpg_sql_statistics(cpgs, datasets, sources)
 
+  return(df_cpg)
+}
+
+#' Get the statistics for all cpgs in a given list of datasets
+#'
+#' @param datasets a list of datasets where we are interested in the cpgs
+#' @param sources either empty, or a list of sources corresponding to each dataset
+get_cpg_sql_download_statistics <- function(
+    datasets = character(), sources = character()
+) {
+  # run validate
+  validate_cpg_search(c("cg12345678"), datasets, sources)
+  
+  # read data from the database
+  df_cpg <- scan_cpg_sql_download_statistics(datasets, sources)
+  
   return(df_cpg)
 }
 

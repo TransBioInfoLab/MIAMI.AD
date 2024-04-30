@@ -38,20 +38,20 @@ tab_download_datasets_server <- function(id, common, phenotype) {
       # get dataframe
       df_data <- df_datasets() %>%
         dplyr::select(-"PMID_Excel", -"Select_Bool")
-      if (nrow(df_data) > 0){
-        df_data$Download <- create_download_link(df_data$Dataset,
-                                                 df_data$Source,
-                                                 df_downloads,
-                                                 method = "CpG")
-      } else {
-        df_data$Download <- character()
-      }
+      # if (nrow(df_data) > 0){
+      #   df_data$Download <- create_download_link(df_data$Dataset,
+      #                                            df_data$Source,
+      #                                            df_downloads,
+      #                                            method = "CpG")
+      # } else {
+      #   df_data$Download <- character()
+      # }
 
       # get formatting
       full_options <- list(
         columnDefs=list(
           list(className = 'dt-center', targets = 1:6)),
-        pageLength = 100,
+        pageLength = 50,
         autowidth = FALSE,
         language = list(
           zeroRecords = paste0(
@@ -63,7 +63,7 @@ tab_download_datasets_server <- function(id, common, phenotype) {
       DT::datatable(
         df_data,
         rownames = FALSE,
-        escape = c(-5, -7, -8),
+        escape = c(-5, -7),
         selection = 'none',
         options = full_options,
         callback = htmlwidgets::JS(checkbox_js("data_selection_targets", session$ns, 7))
@@ -92,5 +92,88 @@ tab_download_datasets_server <- function(id, common, phenotype) {
       # update tables
       df_datasets(df)
     })
+    
+    # Clear download selection
+    shiny::observeEvent(input$command_clear,
+                        {
+                          fill_plotting_table(df_datasets, selection=FALSE)
+                        }, ignoreInit = TRUE)
+    
+    # Update download selection
+    shiny::observeEvent(input$command_fill,
+                        {
+                          fill_plotting_table(df_datasets, selection=TRUE)
+                          
+                        }, ignoreInit = TRUE)
+    
+    # Start Data Download
+    output$download_data <- shiny::downloadHandler(
+      filename = function(){"CpG Data.xlsx"},
+      
+      content = function(filename) {
+        df_data <- df_datasets() %>%
+          dplyr::filter(.data$Select_Bool)
+        df_labels <- df_data %>%
+          dplyr::select(-"PMID", -"Select_Bool", -"Select") %>%
+          dplyr::rename(PMID = "PMID_Excel")
+        
+        wb <- openxlsx::createWorkbook()
+        
+        if (nrow(df_data) == 0) {
+          return(openxlsx::saveWorkbook(wb, file = filename))
+        }
+        
+        df_stats <- get_cpg_sql_download_statistics(
+          datasets = df_data$Dataset, sources = df_data$Source
+        )
+        
+        df_pos <- get_cpg_sql_positions(
+          unique(df_stats$cpg),
+          common$genome_version()
+        )
+        
+        df_stats <- df_stats %>%
+          dplyr::left_join(df_pos, by = "cpg")
+        
+        for (index in 1:nrow(df_data)) {
+          Dataset <- df_data$Dataset[[index]]
+          Source <- df_data$Source[[index]]
+          
+          df_cpg <- df_stats %>%
+            dplyr::filter(
+              .data$dataset == Dataset,
+              .data$sample_group == Source
+            ) %>%
+            dplyr::select(
+              "cpg",
+              "chr",
+              "pos",
+              estimate = "statistics_value",
+              "pvalue",
+              "fdr"
+            )
+          
+          sheet_name <- paste0(Dataset, "_", index)
+          openxlsx::addWorksheet(wb, sheet_name)
+          openxlsx::writeData(
+            wb = wb,
+            sheet = sheet_name,
+            x = df_labels[index, , drop = FALSE],
+            startCol = 1,
+            startRow = 1
+          )
+          openxlsx::writeData(
+            wb = wb,
+            sheet = sheet_name,
+            x = df_cpg,
+            startCol = 1,
+            startRow = 4
+          )
+        }
+        
+        openxlsx::saveWorkbook(wb, file = filename)
+      },
+      contentType = "file/xlsx"
+    )
   })
 }

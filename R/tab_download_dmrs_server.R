@@ -45,12 +45,16 @@ tab_download_dmrs_server <- function(id, common, phenotype) {
                                                  df_data$Source,
                                                  df_downloads,
                                                  method = "DMR")
-      } else {
-        df_data$Download <- character()
+        df_data <- df_data %>%
+          dplyr::filter(nchar(.data$Download) > 0) %>%
+          dplyr::select(-"Download")
       }
-
-      df_data <- df_data %>%
-        dplyr::filter(nchar(.data$Download) > 0)
+      # } else {
+      #   df_data$Download <- character()
+      # }
+      # 
+      # df_data <- df_data %>%
+      #   dplyr::filter(nchar(.data$Download) > 0)
 
       shiny::validate(
         shiny::need(
@@ -79,7 +83,7 @@ tab_download_dmrs_server <- function(id, common, phenotype) {
       DT::datatable(
         df_data,
         rownames = FALSE,
-        escape = c(-5, -7, -8),
+        escape = c(-5, -7),
         selection = "none",
         options = full_options,
         callback = htmlwidgets::JS(checkbox_js("dmr_selection_targets", session$ns, 7))
@@ -108,5 +112,80 @@ tab_download_dmrs_server <- function(id, common, phenotype) {
       # update tables
       df_datasets(df)
     })
+    
+    # Clear download selection
+    shiny::observeEvent(input$command_clear,
+                        {
+                          fill_plotting_table(df_datasets, selection=FALSE)
+                        }, ignoreInit = TRUE)
+    
+    # Update download selection
+    shiny::observeEvent(input$command_fill,
+                        {
+                          fill_plotting_table(df_datasets, selection=TRUE)
+                          
+                        }, ignoreInit = TRUE)
+    
+    # Start Data Download
+    output$download_data <- shiny::downloadHandler(
+      filename = function(){"DMR Data.xlsx"},
+      
+      content = function(filename) {
+        df_data <- df_datasets() %>%
+          dplyr::filter(.data$Select_Bool)
+        df_labels <- df_data %>%
+          dplyr::select(-"PMID", -"Select_Bool", -"Select") %>%
+          dplyr::rename(PMID = "PMID_Excel")
+        
+        wb <- openxlsx::createWorkbook()
+        
+        if (nrow(df_data) == 0) {
+          return(openxlsx::saveWorkbook(wb, file = filename))
+        }
+        
+        df_stats <- common$raw_data$DMR
+        
+        for (index in 1:nrow(df_data)) {
+          Dataset <- df_data$Dataset[[index]]
+          Source <- df_data$Source[[index]]
+          
+          df_dmr <- df_stats %>%
+            dplyr::filter(
+              .data$dataset == Dataset,
+              .data$source == Source
+            ) %>%
+            dplyr::select(
+              "DMR",
+              "chr",
+              "start",
+              "end",
+              "nProbes",
+              "pValue",
+              "adj.pValue",
+              "direction"
+            )
+          
+          sheet_name <- paste0(Dataset, "_", index)
+          openxlsx::addWorksheet(wb, sheet_name)
+          openxlsx::writeData(
+            wb = wb,
+            sheet = sheet_name,
+            x = df_labels[index, , drop = FALSE],
+            startCol = 1,
+            startRow = 1
+          )
+          openxlsx::writeData(
+            wb = wb,
+            sheet = sheet_name,
+            x = df_dmr,
+            startCol = 1,
+            startRow = 4
+          )
+        }
+        
+        openxlsx::saveWorkbook(wb, file = filename)
+      },
+      contentType = "file/xlsx"
+    )
   })
 }
