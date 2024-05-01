@@ -15,6 +15,7 @@ read_in_data <- function() {
   df_family_labels <- readRDS(file.path(dir_summary(), "Epigenetic_Legends.RDS"))
   df_labels <- readRDS(file.path(dir_summary(), "Study_Legends.RDS"))
   df_datasets_list <- readRDS(file.path(dir_summary(), "Studies_Table.RDS"))
+  df_agora <- readRDS(file.path(dir_summary(), "Agora_Genes.RDS"))
 
   df_downloads <- readRDS(file.path(dir_summary(), "Download_Links.RDS"))
   cpg_lists <- readRDS(file.path(dir_summary(), "CpG_Lists.RDS"))
@@ -38,7 +39,8 @@ read_in_data <- function() {
                   downloads = df_downloads,
                   London = cpg_lists$London,
                   mQTL = cpg_lists$mQTL,
-                  DMR = df_dmr
+                  DMR = df_dmr,
+                  agora = df_agora
                   )
 
   return(raw_data)

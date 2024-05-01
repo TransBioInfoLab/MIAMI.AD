@@ -104,7 +104,7 @@ tab_gene_server <- function(id, common){
       df_selection_dt = datasets_mod$df_selection_dt,
       df_toplot = datasets_mod$df_toplot,
       chr_position_ls = chr_position_ls,
-      selected_gene = input$select_gene
+      df_gene_genome = df_gene_genome
     )
 
     tab_gene_plot_server(

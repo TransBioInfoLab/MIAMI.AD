@@ -1,5 +1,5 @@
 tab_gene_data_server <- function(
-    id, common, df_selection_dt, df_toplot, chr_position_ls, selected_gene
+    id, common, df_selection_dt, df_toplot, chr_position_ls, df_gene_genome
 ) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- shiny::NS(id)
@@ -10,6 +10,7 @@ tab_gene_data_server <- function(
     # define tables from raw_data
     df_labels <- raw_data$labels
     df_dmr <- raw_data$DMR
+    df_agora <- raw_data$agora
 
     # Change to CpG Panel to explore CpGs
     shiny::observeEvent(input$command_explore, {
@@ -36,6 +37,42 @@ tab_gene_data_server <- function(
     }, ignoreInit = TRUE)
 
     # Create Tables
+    ## External Database Table
+    output_data_external <- shiny::reactive({
+      chr_position_ls <- chr_position_ls()
+      select_chromosome <- chr_position_ls$chr
+      select_start <- chr_position_ls$start
+      select_end <- chr_position_ls$end
+      df_gene_genome <- df_gene_genome() %>%
+        dplyr::filter(
+          .data$chr == select_chromosome,
+          .data$end > select_start,
+          .data$start < select_end
+        ) %>%
+        dplyr::mutate(
+          GWAS_Region = create_GWAS_region_link(
+            paste0(.data$chr, ":", .data$start, "-", .data$end)
+          ),
+          GWAS_Gene = create_GWAS_gene_link(.data$Gene),
+          Agora = create_Agora_link(.data$Gene, df_agora)
+        )
+      
+      rbind(
+        df_gene_genome,
+        data.frame(
+          Gene = "",
+          chr = select_chromosome,
+          start = select_start,
+          end = select_end,
+          GWAS_Region = create_GWAS_region_link(
+            paste0(select_chromosome, ":", select_start, "-", select_end)
+          ),
+          GWAS_Gene = "",
+          Agora = ""
+        )
+      )
+    })
+    
     ## DMR Table
     output_data_dmrs <- shiny::reactive({
       chr_position_ls <- chr_position_ls()
@@ -135,6 +172,28 @@ tab_gene_data_server <- function(
     })
 
     # Display Tables
+    output$data_external <- DT::renderDT({
+      # get reactives and inputs
+      output_data_external <- output_data_external()
+      
+      full_options <- list(columnDefs = list(
+        list(className = "dt-center", targets = "_all")),
+        autowidth = FALSE,
+        language = list(
+          zeroRecords = paste0(
+            "No dmrs available. - ",
+            "There were no significant dmrs recorded in the selected datasets,",
+            " in the selected genomic range"))
+      )
+      
+      DT::datatable(
+        output_data_external,
+        escape = c(-5, -6, -7),
+        rownames = FALSE,
+        options = full_options
+      )
+    })
+    
     output$data_dmrs <- DT::renderDT({
       # get reactives and inputs
       output_data_dmrs <- output_data_dmrs()

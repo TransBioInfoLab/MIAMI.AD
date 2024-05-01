@@ -27,6 +27,45 @@ create_mQTL_Link <- function(
   }
 }
 
+#' Create links tot he Agora database for genes
+#'
+#' @param gene a vector of genes to convert to Agora links
+#' @param df_ens a dataframe of genes present in Agora, and their ENS IDs
+create_Agora_link <- function(gene = character(), df_ens = data.frame()) {
+  df_gene <- data.frame(
+    Gene = gene
+  ) %>%
+    dplyr::left_join(df_ens, by = "Gene") %>%
+    tidyr::replace_na(list(ENS = ""))
+  
+  url <- sprintf("https://agora.adknowledgeportal.org/genes/%s", df_gene$ENS)
+  hyper_link <- sprintf('<a href=%s target="_blank">Agora</a>', url)
+  hyper_link[nchar(df_gene$ENS) == 0] <- ""
+  
+  return(hyper_link)
+}
+
+#' Create links to the GWAS genomic range inforamtion
+#'
+#' @param ranges genomic ranges to convert to GWAS links
+create_GWAS_region_link <- function(ranges = character()) {
+  url <- sprintf("https://www.ebi.ac.uk/gwas/regions/%s", ranges)
+  hyper_link <- sprintf('<a href=%s target="_blank">GWAS</a>', url)
+  
+  return(hyper_link)
+}
+
+#' Create links to the GWAS gene inforamtion
+#'
+#' @param genes genes to convert to GWAS links
+create_GWAS_gene_link <- function(genes = character()) {
+  # url <- sprintf("https://www.ebi.ac.uk/gwas/genes/%s", genes)
+  url <- sprintf("https://www.ebi.ac.uk/gwas/search?query=%s", genes)
+  hyper_link <- sprintf('<a href=%s target="_blank">GWAS</a>', url)
+  
+  return(hyper_link)
+}
+
 #' Create links to the epigenetic essex blood-brain database for cpgs present there
 #'
 #' @param cpg a vector of cpgs to convert to blood-brain links

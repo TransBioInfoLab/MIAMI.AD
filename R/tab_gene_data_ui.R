@@ -6,7 +6,23 @@ tab_gene_data_UI <- function(id) {
     shiny::div(
       class = "buttons-group",
       shiny::downloadButton(
-        ns("download_data"), "Download Tables", width = "150px")
+        ns("download_data"),
+        "Download Tables",
+        width = "150px"
+      ),
+      shiny::actionButton(
+        inputId = 'link_eforge',
+        label = "eFORGE",
+        icon = icon("th"),
+        width = "150px",
+        onclick = "window.open('https://eforge.altiusinstitute.org/', '_blank')"
+      )
+    ),
+    shiny::tags$p(
+      "To perform gene ontology analysis, click on ",
+      shiny::tags$em("Download Tables"),
+      " to get the list of CpGs, and use those on ",
+      shiny::tags$em("eFORGE")
     ),
 
     shiny::h4("Selected Datasets", class = "top-margin-m"),
@@ -16,7 +32,8 @@ tab_gene_data_UI <- function(id) {
     DT::DTOutput(ns("data_dmrs")) %>%
       shinycssloaders::withSpinner(proxy.height = 150),
     shiny::h4("Multi-omics and Multi-tissue Resources", class = "top-magin-m"),
-    shiny::actionButton(ns("command_cpgs"), "eFORGE CpGs"),
+    DT::DTOutput(ns("data_external")) %>%
+      shinycssloaders::withSpinner(proxy.height = 150),
 
     shiny::div(
       class = "top-margin-s flex",
