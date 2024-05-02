@@ -4,8 +4,6 @@ tab_genome_plot_UI <- function(id) {
   shiny::div(
     class = "top-margin-m tab-body",
     shiny::h4("Selected Datasets", class = "top-margin-m"),
-    shiny::tags$p(shiny::tags$b("To select a different set of CpGs")),
-    shiny::tags$p("- change significance level: double click on", shiny::tags$b("Threshold")),
     DT::DTOutput(ns("data_selection_plot")) %>% shinycssloaders::withSpinner(proxy.height = 150),
     shiny::h4("Venn Diagram", class = "top-margin-s"),
     shinycssloaders::withSpinner(

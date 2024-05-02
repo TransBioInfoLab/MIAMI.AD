@@ -26,9 +26,6 @@ tab_genome_data_UI <- function(id) {
     ),
     
     shiny::h4("Selected Datasets", class = "top-margin-m"),
-    shiny::p(shiny::tags$b("To select a different set of CpGs")),
-    shiny::p("- change significance level: double click on",
-             shiny::tags$b("Threshold")),
     DT::DTOutput(ns("data_selection_data")) %>%
       shinycssloaders::withSpinner(proxy.height = 150),
     shiny::div(
