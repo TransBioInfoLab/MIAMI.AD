@@ -45,6 +45,24 @@ create_Agora_link <- function(gene = character(), df_ens = data.frame()) {
   return(hyper_link)
 }
 
+#' Create links to the Niagads database for genes
+#'
+#' @param gene a vector of genes to convert to Niagads links
+#' @param df_ens a dataframe of genes present in Niagads, and their ENS IDs
+create_Niagads_link <- function(gene = character(), df_ens = data.frame()) {
+  df_gene <- data.frame(
+    Gene = gene
+  ) %>%
+    dplyr::left_join(df_ens, by = "Gene") %>%
+    tidyr::replace_na(list(ENS = ""))
+  
+  url <- sprintf("https://www.niagads.org/genomics/app/record/gene/%s", df_gene$ENS)
+  hyper_link <- sprintf('<a href=%s target="_blank">GenomicsDB</a>', url)
+  hyper_link[nchar(df_gene$ENS) == 0] <- ""
+  
+  return(hyper_link)
+}
+
 #' Create links to the GWAS genomic range inforamtion
 #'
 #' @param ranges genomic ranges to convert to GWAS links

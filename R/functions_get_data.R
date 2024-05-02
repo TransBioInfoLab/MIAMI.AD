@@ -15,7 +15,7 @@ read_in_data <- function() {
   df_family_labels <- readRDS(file.path(dir_summary(), "Epigenetic_Legends.RDS"))
   df_labels <- readRDS(file.path(dir_summary(), "Study_Legends.RDS"))
   df_datasets_list <- readRDS(file.path(dir_summary(), "Studies_Table.RDS"))
-  df_agora <- readRDS(file.path(dir_summary(), "Agora_Genes.RDS"))
+  df_external <- readRDS(file.path(dir_summary(), "Database_Genes.RDS"))
 
   df_downloads <- readRDS(file.path(dir_summary(), "Download_Links.RDS"))
   cpg_lists <- readRDS(file.path(dir_summary(), "CpG_Lists.RDS"))
@@ -28,6 +28,8 @@ read_in_data <- function() {
   df_gene_genome_read$end_hg38 <- as.integer(df_gene_genome_read$end_hg38)
   df_dmr$start <- as.integer(df_dmr$start)
   df_dmr$end <- as.integer(df_dmr$end)
+  df_external$Agora <- as.logical(df_external$Agora)
+  df_external$Niagads <- as.logical(df_external$Niagads)
 
   # save to list
   raw_data = list(gene_location = df_gene_genome_read,
@@ -40,7 +42,7 @@ read_in_data <- function() {
                   London = cpg_lists$London,
                   mQTL = cpg_lists$mQTL,
                   DMR = df_dmr,
-                  agora = df_agora
+                  external = df_external
                   )
 
   return(raw_data)
