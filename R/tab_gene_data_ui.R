@@ -21,7 +21,7 @@ tab_gene_data_UI <- function(id) {
 
     shiny::div(
       class = "top-margin-s flex",
-      shiny::h4("Annotated CpGs", style = "margin-right: 10px;"),
+      shiny::h4("CpGs in Genomic Region", style = "margin-right: 10px;"),
       shiny::actionButton(ns("command_explore"), "Explore Top 10 CpGs")
     ),
     DT::DTOutput(ns("data_markers")) %>%
