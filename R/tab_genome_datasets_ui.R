@@ -8,6 +8,12 @@ tab_genome_datasets_UI <- function(id) {
       lightButton(ns("command_fill"), "Select All", width = "150px"),
       lightButton(ns("command_clear"), "Deselect All", width = "150px")
     ),
+    shiny::p(shiny::tags$b("To select a different set of CpGs")),
+    shiny::p(
+      "- change significance level: double click on number in the",
+      shiny::tags$b("Threshold"),
+      " column",
+    ),
     DT::DTOutput(ns("data_selection_targets")),
     shiny::br()
   )
