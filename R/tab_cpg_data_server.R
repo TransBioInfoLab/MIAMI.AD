@@ -8,6 +8,7 @@ tab_cpg_data_server <- function(id, common, df_toplot, df_selection_dt, input_se
     cpg_London <- raw_data$London
     cpg_mQTL <- raw_data$mQTL
     df_family <- raw_data$clocks
+    df_agora <- raw_data$agora
 
     output$data_selection_data <- DT::renderDT({
       df_selection_dt()
@@ -71,12 +72,56 @@ tab_cpg_data_server <- function(id, common, df_toplot, df_selection_dt, input_se
         df_pos <- get_cpg_sql_positions(cpgs, common$genome_version())
         df_cpg_param <- get_cpg_sql_parameters(df_pos$cpg, unique = FALSE)
         df_cpg_targets <- df_pos %>%
-          dplyr::inner_join(df_cpg_param, by = c("cpg" = "cpg")) %>%
-          dplyr::mutate(mQTL = create_mQTL_Link(.data$cpg, cpg_mQTL)) %>%
-          dplyr::mutate(London = create_London_Link(.data$cpg, cpg_London))
+          dplyr::inner_join(df_cpg_param, by = c("cpg" = "cpg"))
       }
       
       return (df_cpg_targets)
+    })
+    
+    ## Get Database Table
+    df_external_targets <- shiny::reactive({
+      df_cpg_targets <- df_cpg_targets()
+      
+      cpgs <- df_cpg_targets %>%
+        dplyr::pull("cpg")
+      genes <- df_cpg_targets %>%
+        dplyr::filter(nchar(.data$Illumina) > 0) %>%
+        dplyr::pull("Illumina") %>%
+        stringr::str_split(";") %>%
+        unlist() %>%
+        unname() %>%
+        unique()
+      
+      if (length(genes) == 0) {
+        df_gene <- data.frame(
+          Category = character(),
+          Identity = character(),
+          mQTL = character(),
+          London = character(),
+          GWAS = character(),
+          Agora = character()
+        )
+      } else {
+        df_gene <- data.frame(
+          Category = "Gene",
+          Identity = genes,
+          mQTL = "",
+          London = "",
+          GWAS = create_GWAS_gene_link(genes),
+          Agora = create_Agora_link(genes, df_agora)
+        )
+      }
+      
+      df_cpg <- data.frame(
+        Category = "CpG",
+        Identity = cpgs,
+        mQTL = create_mQTL_Link(cpgs, cpg_mQTL),
+        London = create_London_Link(cpgs, cpg_London),
+        GWAS = "",
+        Agora = ""
+      )
+      
+      rbind(df_cpg, df_gene)
     })
 
     ## CpG Compilation Table
@@ -91,13 +136,15 @@ tab_cpg_data_server <- function(id, common, df_toplot, df_selection_dt, input_se
         dplyr::pull("cpg")
 
       if (length(Datasets) == 0 | length(cpgs) == 0){
-        df_stats <- data.frame(cpg = character(),
-                               dataset = character(),
-                               sample_group = character(),
-                               pvalue = numeric(),
-                               statistics_value = numeric(),
-                               estimate = numeric(),
-                               std_err = numeric())
+        df_stats <- data.frame(
+          cpg = character(),
+          dataset = character(),
+          sample_group = character(),
+          pvalue = numeric(),
+          statistics_value = numeric(),
+          estimate = numeric(),
+          std_err = numeric()
+        )
 
         return (df_stats)
       }
@@ -147,8 +194,7 @@ tab_cpg_data_server <- function(id, common, df_toplot, df_selection_dt, input_se
       df_cpg_targets <- df_cpg_targets()
 
       df_cpg_targets <- df_cpg_targets %>%
-        dplyr::rename(`Blood-Brain comparison` = "London",
-                      CpG = "cpg")
+        dplyr::rename(CpG = "cpg")
 
       full_options <- list(columnDefs = list(
         list(className = 'dt-center', targets = "_all")),
@@ -159,8 +205,34 @@ tab_cpg_data_server <- function(id, common, df_toplot, df_selection_dt, input_se
             "None of the selected CpGs were in our database."))
       )
 
-      DT::datatable(df_cpg_targets, escape = c(-7, -8),
-                rownames = FALSE, options = full_options)
+      DT::datatable(
+        df_cpg_targets,
+        rownames = FALSE,
+        options = full_options
+      )
+    })
+    
+    output$data_external <- DT::renderDT({
+      df_external_targets <- df_external_targets()
+      
+      df_external_targets <- df_external_targets %>%
+        dplyr::rename(`Blood-Brain comparison` = "London")
+      
+      full_options <- list(columnDefs = list(
+        list(className = 'dt-center', targets = "_all")),
+        autowidth=F,
+        language = list(
+          zeroRecords = paste0(
+            "No CpGs available. - ",
+            "None of the selected CpGs were in our database."))
+      )
+      
+      DT::datatable(
+        df_external_targets,
+        escape = c(-3, -4, -5, -6),
+        rownames = FALSE,
+        options = full_options
+      )
     })
 
     output$data_indiv <- DT::renderDT({
