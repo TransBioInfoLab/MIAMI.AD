@@ -1,5 +1,5 @@
 tab_gene_data_server <- function(
-    id, common, df_selection_dt, df_toplot, chr_position_ls, df_gene_genome
+    id, common, df_selection_dt, df_toplot, chr_position_ls, input_gene
 ) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- shiny::NS(id)
@@ -43,34 +43,36 @@ tab_gene_data_server <- function(
       select_chromosome <- chr_position_ls$chr
       select_start <- chr_position_ls$start
       select_end <- chr_position_ls$end
-      df_gene_genome <- df_gene_genome() %>%
-        dplyr::filter(
-          .data$chr == select_chromosome,
-          .data$end > select_start,
-          .data$start < select_end
-        ) %>%
-        dplyr::mutate(
-          GWAS_Region = create_GWAS_region_link(
-            paste0(.data$chr, ":", .data$start, "-", .data$end)
-          ),
-          GWAS_Gene = create_GWAS_gene_link(.data$Gene),
-          Agora = create_Agora_link(.data$Gene, df_agora)
-        )
+      select_gene <- input_gene
       
-      rbind(
-        df_gene_genome,
-        data.frame(
-          Gene = "",
-          chr = select_chromosome,
-          start = select_start,
-          end = select_end,
-          GWAS_Region = create_GWAS_region_link(
-            paste0(select_chromosome, ":", select_start, "-", select_end)
-          ),
-          GWAS_Gene = "",
-          Agora = ""
-        )
+      select_range <- paste0(
+        select_chromosome, ":", select_start, "-", select_end
       )
+      
+      df_range <- data.frame(
+        Category = "Genomic Region",
+        Identity = select_range,
+        GWAS = create_GWAS_region_link(select_range),
+        Agora = ""
+      )
+      
+      if (is.na(select_gene) | (nchar(select_gene) == 0)) {
+        df_gene <- data.frame(
+          Category = character(),
+          Identity = character(),
+          GWAS = character(),
+          Agora = character()
+        )
+      } else {
+        df_gene <- data.frame(
+          Category = "Gene",
+          Identity = select_gene,
+          GWAS = create_GWAS_gene_link(select_gene),
+          Agora = create_Agora_link(select_gene, df_agora)
+        )
+      }
+      
+      rbind(df_gene, df_range)
     })
     
     ## DMR Table
@@ -188,7 +190,7 @@ tab_gene_data_server <- function(
       
       DT::datatable(
         output_data_external,
-        escape = c(-5, -6, -7),
+        escape = c(-3, -4),
         rownames = FALSE,
         options = full_options
       )
