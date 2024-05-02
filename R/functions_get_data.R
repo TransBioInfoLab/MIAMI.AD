@@ -14,7 +14,6 @@ read_in_data <- function() {
   df_family <- readRDS(file.path(dir_summary(), "Epigenetic_Clocks.RDS"))
   df_family_labels <- readRDS(file.path(dir_summary(), "Epigenetic_Legends.RDS"))
   df_labels <- readRDS(file.path(dir_summary(), "Study_Legends.RDS"))
-  df_datasets_list <- readRDS(file.path(dir_summary(), "Studies_Table.RDS"))
   df_external <- readRDS(file.path(dir_summary(), "Database_Genes.RDS"))
 
   df_downloads <- readRDS(file.path(dir_summary(), "Download_Links.RDS"))
@@ -37,7 +36,6 @@ read_in_data <- function() {
                   clocks = df_family,
                   clock_labels = df_family_labels,
                   labels = df_labels,
-                  dataset_list = df_datasets_list,
                   downloads = df_downloads,
                   London = cpg_lists$London,
                   mQTL = cpg_lists$mQTL,
