@@ -10,7 +10,6 @@ tab_gene_data_server <- function(
     # define tables from raw_data
     df_labels <- raw_data$labels
     df_dmr <- raw_data$DMR
-    df_agora <- raw_data$agora
 
     # Change to CpG Panel to explore CpGs
     shiny::observeEvent(input$command_explore, {
@@ -37,44 +36,6 @@ tab_gene_data_server <- function(
     }, ignoreInit = TRUE)
 
     # Create Tables
-    ## External Database Table
-    output_data_external <- shiny::reactive({
-      chr_position_ls <- chr_position_ls()
-      select_chromosome <- chr_position_ls$chr
-      select_start <- chr_position_ls$start
-      select_end <- chr_position_ls$end
-      select_gene <- input_gene
-      
-      select_range <- paste0(
-        select_chromosome, ":", select_start, "-", select_end
-      )
-      
-      df_range <- data.frame(
-        Category = "Genomic Region",
-        Identity = select_range,
-        GWAS = create_GWAS_region_link(select_range),
-        Agora = ""
-      )
-      
-      if (is.na(select_gene) | (nchar(select_gene) == 0)) {
-        df_gene <- data.frame(
-          Category = character(),
-          Identity = character(),
-          GWAS = character(),
-          Agora = character()
-        )
-      } else {
-        df_gene <- data.frame(
-          Category = "Gene",
-          Identity = select_gene,
-          GWAS = create_GWAS_gene_link(select_gene),
-          Agora = create_Agora_link(select_gene, df_agora)
-        )
-      }
-      
-      rbind(df_gene, df_range)
-    })
-    
     ## DMR Table
     output_data_dmrs <- shiny::reactive({
       chr_position_ls <- chr_position_ls()
