@@ -182,7 +182,7 @@ tab_genome_data_server <- function(id, common, df_toplot) {
 
     output$download_data <- shiny::downloadHandler(
       filename = function(){"CpG Statistics.xlsx"},
-      content = function(filename){
+      content = function(filename) {
         wb <- openxlsx::createWorkbook()
 
         openxlsx::addWorksheet(wb, "Dataset Abbreviations")
@@ -196,6 +196,27 @@ tab_genome_data_server <- function(id, common, df_toplot) {
         openxlsx::addWorksheet(wb, "Annotated CpGs")
         openxlsx::writeData(wb, df_mann_show(), sheet = "Annotated CpGs")
 
+        openxlsx::saveWorkbook(wb, file = filename)
+      },
+      contentType = "file/xlsx"
+    )
+    
+    output$download_data_second <- shiny::downloadHandler(
+      filename = function(){"CpG Statistics.xlsx"},
+      content = function(filename) {
+        wb <- openxlsx::createWorkbook()
+        
+        openxlsx::addWorksheet(wb, "Dataset Abbreviations")
+        df_datasets <- df_toplot() %>%
+          dplyr::select(
+            "Dataset", "Source", "Description", "Author",
+            "Year", "PMID_Excel") %>%
+          dplyr::rename(PMID = .data$PMID_Excel, sample_group = .data$Source)
+        openxlsx::writeData(wb, df_datasets, sheet="Dataset Abbreviations")
+        
+        openxlsx::addWorksheet(wb, "Annotated CpGs")
+        openxlsx::writeData(wb, df_mann_show(), sheet = "Annotated CpGs")
+        
         openxlsx::saveWorkbook(wb, file = filename)
       },
       contentType = "file/xlsx"
