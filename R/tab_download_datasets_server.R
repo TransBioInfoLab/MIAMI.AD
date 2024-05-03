@@ -63,10 +63,10 @@ tab_download_datasets_server <- function(id, common, phenotype) {
       DT::datatable(
         df_data,
         rownames = FALSE,
-        escape = c(-5, -7),
+        escape = c(-5, -8),
         selection = 'none',
         options = full_options,
-        callback = htmlwidgets::JS(checkbox_js("data_selection_targets", session$ns, 7))
+        callback = htmlwidgets::JS(checkbox_js("data_selection_targets", session$ns, 8))
       ) %>%
         DT::formatStyle(columns = c('Dataset'), fontweight = 'bold',
                     `text-align` = 'left')

@@ -44,7 +44,7 @@ tab_cpg_datasets_server <- function(id, common, phenotype) {
       # filter to selected datasets, and drop unneeded columns
       df_toplot <- df_datasets_full %>%
         dplyr::filter(.data$Select_Bool) %>%
-        dplyr::select(c(-"Select", -"Select_Bool"))
+        dplyr::select(c(-"Select", -"Select_Bool", -"Full_EWAS"))
 
       return (df_toplot)
     })
@@ -73,7 +73,7 @@ tab_cpg_datasets_server <- function(id, common, phenotype) {
 
       # get dataframe
       df_data <- df_datasets() %>%
-        dplyr::select(-"PMID_Excel", -"Select_Bool")
+        dplyr::select(-"PMID_Excel", -"Select_Bool", -"Full_EWAS")
 
       # get formatting
       full_options <- list(
@@ -94,7 +94,7 @@ tab_cpg_datasets_server <- function(id, common, phenotype) {
         escape = c(-5,-6),
         selection = 'none',
         options = full_options,
-        callback = htmlwidgets::JS(checkbox_js("data_selection_targets", session$ns, 6))) %>%
+        callback = htmlwidgets::JS(checkbox_js("data_selection_targets", session$ns, 7))) %>%
         DT::formatStyle(columns = c('Dataset'), fontweight = 'bold',
                     `text-align` = 'left')
     }, server=FALSE)

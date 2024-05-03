@@ -51,7 +51,7 @@ tab_gene_datasets_server <- function(id, common, phenotype) {
       # filter to selected datasets, and drop unneeded columns
       df_toplot <- df_datasets_full %>%
         dplyr::filter(.data$Select_Bool) %>%
-        dplyr::select(c(-"Select", -"Select_Bool"))
+        dplyr::select(c(-"Select", -"Select_Bool", -"Full_EWAS"))
 
       return (df_toplot)
     })
@@ -80,7 +80,7 @@ tab_gene_datasets_server <- function(id, common, phenotype) {
 
       # get dataframe
       df_data <- df_datasets() %>%
-        dplyr::select(-"PMID_Excel", -"Select_Bool")
+        dplyr::select(-"PMID_Excel", -"Select_Bool", -"Full_EWAS")
 
       # get formatting
       full_options <- list(
@@ -143,7 +143,7 @@ tab_gene_datasets_server <- function(id, common, phenotype) {
 
       # update the dataset
       row <- info$row
-      col <- info$col + 1
+      col <- info$col + 2
       value <- info$value
       df <- df_datasets()
       df[row,col] <- value

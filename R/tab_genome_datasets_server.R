@@ -28,7 +28,7 @@ tab_genome_datasets_server <- function(id, common, phenotype) {
       # get dataframe
       df_data <- df_datasets() %>%
         dplyr::select(-"PMID_Excel", -"Select_Bool", -"Metric_Text",
-                      -"Filter_Text")
+                      -"Filter_Text", -"Full_EWAS")
 
       # get formatting
       full_options <- list(
@@ -51,7 +51,7 @@ tab_genome_datasets_server <- function(id, common, phenotype) {
         options = full_options,
         callback = htmlwidgets::JS(
           multi_js(
-            "data_selection_option", session$ns, columns = c(8, 10, 12),
+            "data_selection_option", session$ns, columns = c(9, 11, 13),
             labels = c("checkb", "radiom", "radiof"),
             button_types = c("check", "radio", "radio"))),
         class = "display nowrap") %>%
@@ -94,7 +94,7 @@ tab_genome_datasets_server <- function(id, common, phenotype) {
       # get dataset and update information
       df <- df_datasets()
       row <- info$row
-      col <- info$col + 5
+      col <- info$col + 6
       value <- info$value
       df[row,col] <- value
       

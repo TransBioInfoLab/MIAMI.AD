@@ -9,7 +9,12 @@ tab_genome_data_server <- function(id, common, df_toplot) {
       # get dataframe
       df_data <- df_toplot() %>%
         dplyr::select(
-          -"PMID_Excel", -"Metric_Text", -"Filter_Text", -"Threshold")
+          -"PMID_Excel",
+          -"Metric_Text",
+          -"Filter_Text", 
+          -"Threshold",
+          -"Full_EWAS"
+        )
 
       # get formatting
       full_options <- list(

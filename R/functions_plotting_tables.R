@@ -10,7 +10,8 @@ create_empty_dataframe <- function(source = FALSE, metric = FALSE) {
     Author = character(),
     Year = integer(),
     PMID = character(),
-    PMID_Excel = character()
+    PMID_Excel = character(),
+    Full_EWAS = character()
   )
 
   # add extra columns as needed
@@ -96,9 +97,9 @@ update_datasets_table <- function(
     ){
   # Filter df_labels to the relevant columns
   if (source){
-    columns <- c("Dataset", "Description", "Author", "Year", "PMID", "Source")
+    columns <- c("Dataset", "Description", "Author", "Year", "PMID", "Source", "Full_EWAS")
   } else {
-    columns <- c("Dataset", "Description", "Author", "Year", "PMID")
+    columns <- c("Dataset", "Description", "Author", "Year", "PMID", "Full_EWAS")
   }
 
   if (has_cpg) {
@@ -144,19 +145,19 @@ update_datasets_table <- function(
     df_miss <- df_miss %>%
       dplyr::select(
         "Dataset", "Description", "Author", "Year", "PMID",
-        "PMID_Excel", "Source", "Select_Bool", "Select",
+        "PMID_Excel", "Source", "Full_EWAS", "Select_Bool", "Select",
         "Metric_Text", "Metric", "Filter_Text", "Filter", "Threshold"
       )
   } else if (source){
     df_miss <- df_miss %>%
       dplyr::select(
         "Dataset", "Description", "Author", "Year", "PMID",
-        "PMID_Excel", "Source", "Select_Bool", "Select")
+        "PMID_Excel", "Source", "Full_EWAS", "Select_Bool", "Select")
   } else {
     df_miss <- df_miss %>%
       dplyr::select(
         "Dataset", "Description", "Author", "Year", "PMID",
-        "PMID_Excel", "Select_Bool", "Select")
+        "PMID_Excel", "Full_EWAS", "Select_Bool", "Select")
   }
 
   df_data_update <- df_data_update %>%
