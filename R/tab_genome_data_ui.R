@@ -37,7 +37,7 @@ tab_genome_data_UI <- function(id) {
         shiny::actionButton(
           inputId = 'link_eforge',
           label = "eFORGE",
-          icon = icon("th"),
+          icon = shiny::icon("th"),
           width = "150px",
           onclick = "window.open('https://eforge.altiusinstitute.org/', '_blank')"
         )
