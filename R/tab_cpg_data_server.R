@@ -203,6 +203,7 @@ tab_cpg_data_server <- function(id, common, df_toplot, df_selection_dt, input_se
       df_external_targets <- df_external_targets %>%
         dplyr::rename(
           `Blood-Brain comparison` = "London",
+          `AD Genomics` = "AD",
           `Gene Expression` = "Agora"
         )
       

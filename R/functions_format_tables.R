@@ -38,7 +38,10 @@ create_Agora_link <- function(gene = character(), df_ens = data.frame()) {
     dplyr::left_join(df_ens, by = "Gene") %>%
     tidyr::replace_na(list(ENS = ""))
   
-  url <- sprintf("https://agora.adknowledgeportal.org/genes/%s", df_gene$ENS)
+  url <- sprintf(
+    "https://agora.adknowledgeportal.org/genes/%s/evidence/rna",
+    df_gene$ENS
+  )
   hyper_link <- sprintf('<a href=%s target="_blank">Agora</a>', url)
   hyper_link[nchar(df_gene$ENS) == 0] <- ""
   

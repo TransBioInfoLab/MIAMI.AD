@@ -10,7 +10,7 @@ tab_genome_datasets_UI <- function(id) {
     ),
     shiny::p(shiny::tags$b("To select a different set of CpGs")),
     shiny::p(
-      "- change significance level: double click on number in the",
+      "- to change significance level: double click on the numbers in the",
       shiny::tags$b("Threshold"),
       " column",
     ),
