@@ -15,6 +15,7 @@ read_in_data <- function() {
   df_family_labels <- readRDS(file.path(dir_summary(), "Epigenetic_Legends.RDS"))
   df_labels <- readRDS(file.path(dir_summary(), "Study_Legends.RDS"))
   df_external <- readRDS(file.path(dir_summary(), "Database_Genes.RDS"))
+  ls_contribute <- readRDS(file.path(dir_summary(), "Contribute_Example.RDS"))
 
   df_downloads <- readRDS(file.path(dir_summary(), "Download_Links.RDS"))
   cpg_lists <- readRDS(file.path(dir_summary(), "CpG_Lists.RDS"))
@@ -40,7 +41,8 @@ read_in_data <- function() {
                   London = cpg_lists$London,
                   mQTL = cpg_lists$mQTL,
                   DMR = df_dmr,
-                  external = df_external
+                  external = df_external,
+                  contribute = ls_contribute
                   )
 
   return(raw_data)
