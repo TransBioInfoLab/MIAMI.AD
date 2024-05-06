@@ -1,5 +1,11 @@
 tab_gene_data_server <- function(
-    id, common, df_selection_dt, df_toplot, chr_position_ls, input_gene
+    id,
+    common,
+    df_selection_dt,
+    df_toplot,
+    chr_position_ls,
+    input_gene,
+    input_type
 ) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- shiny::NS(id)
@@ -56,10 +62,21 @@ tab_gene_data_server <- function(
       df_annotation <- data.frame(
         Genomic_Region = select_range,
         Gene = select_gene
-      ) %>%
+      )
+      
+      if (input_type() == "gene") {
+        df_annotation <- df_annotation %>%
+          dplyr::mutate(
+            GWAS = create_GWAS_gene_link(.data$Gene)
+          )
+      } else {
+        df_annotation <- df_annotation %>%
+          dplyr::mutate(
+            GWAS = create_GWAS_region_link(.data$Genomic_Region)
+          )
+      }
+      df_annotation <- df_annotation %>%
         dplyr::mutate(
-          GWAS_Region = create_GWAS_region_link(.data$Genomic_Region),
-          GWAS = create_GWAS_gene_link(.data$Gene),
           AD = create_Niagads_link(
             .data$Gene, df_external %>% dplyr::filter(.data$Niagads)
           ),
@@ -176,7 +193,6 @@ tab_gene_data_server <- function(
       
       output_data_external <- output_data_external %>%
         dplyr::rename(
-          `GWAS Region` = "GWAS_Region",
           `AD Genomics` = "AD",
           `Gene Expression` = "Agora"
         )
@@ -193,7 +209,7 @@ tab_gene_data_server <- function(
       
       DT::datatable(
         output_data_external,
-        escape = c(-3, -4, -5, -6),
+        escape = c(-3, -4, -5),
         rownames = FALSE,
         options = full_options
       )
