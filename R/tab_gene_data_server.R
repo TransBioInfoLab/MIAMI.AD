@@ -10,6 +10,7 @@ tab_gene_data_server <- function(
     # define tables from raw_data
     df_labels <- raw_data$labels
     df_dmr <- raw_data$DMR
+    df_external <- raw_data$external
 
     # Change to CpG Panel to explore CpGs
     shiny::observeEvent(input$command_explore, {
@@ -36,6 +37,40 @@ tab_gene_data_server <- function(
     }, ignoreInit = TRUE)
 
     # Create Tables
+    ## External Databases
+    output_data_external <- shiny::reactive({
+      # get reactives and inputs
+      chr_position_ls <- chr_position_ls()
+      select_chromosome <- chr_position_ls$chr
+      select_start <- chr_position_ls$start
+      select_end <- chr_position_ls$end
+      select_gene <- input_gene
+      select_range <- paste0(
+        select_chromosome, ":", select_start, "-", select_end
+      )
+      
+      if (is.na(select_gene) | is.null(select_gene)) {
+        select_gene <- ""
+      }
+      
+      df_annotation <- data.frame(
+        Genomic_Region = select_range,
+        Gene = select_gene
+      ) %>%
+        dplyr::mutate(
+          GWAS_Region = create_GWAS_region_link(.data$Genomic_Region),
+          GWAS = create_GWAS_gene_link(.data$Gene),
+          AD = create_Niagads_link(
+            .data$Gene, df_external %>% dplyr::filter(.data$Niagads)
+          ),
+          Agora = create_Agora_link(
+            .data$Gene, df_external %>% dplyr::filter(.data$Agora)
+          )
+        )
+      
+      df_annotation
+    })
+    
     ## DMR Table
     output_data_dmrs <- shiny::reactive({
       chr_position_ls <- chr_position_ls()
@@ -139,6 +174,13 @@ tab_gene_data_server <- function(
       # get reactives and inputs
       output_data_external <- output_data_external()
       
+      output_data_external <- output_data_external %>%
+        dplyr::rename(
+          `GWAS Region` = "GWAS_Region",
+          `AD Genomics` = "AD",
+          `Gene Expression` = "Agora"
+        )
+      
       full_options <- list(columnDefs = list(
         list(className = "dt-center", targets = "_all")),
         autowidth = FALSE,
@@ -151,7 +193,7 @@ tab_gene_data_server <- function(
       
       DT::datatable(
         output_data_external,
-        escape = c(-3, -4),
+        escape = c(-3, -4, -5, -6),
         rownames = FALSE,
         options = full_options
       )

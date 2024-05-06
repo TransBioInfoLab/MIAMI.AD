@@ -83,6 +83,7 @@ create_GWAS_gene_link <- function(genes = character()) {
   # url <- sprintf("https://www.ebi.ac.uk/gwas/genes/%s", genes)
   url <- sprintf("https://www.ebi.ac.uk/gwas/search?query=%s", genes)
   hyper_link <- sprintf('<a href=%s target="_blank">GWAS</a>', url)
+  hyper_link[nchar(genes) == 0] <- ""
   
   return(hyper_link)
 }
