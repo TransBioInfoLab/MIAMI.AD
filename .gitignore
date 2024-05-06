@@ -4,6 +4,7 @@
 .Ruserdata
 References*
 inst/shiny/Data/SQL_DBs/MIAMIAD.db
+*.DS_Store
 .DS_Store
 inst/.DS_Store
 inst/shiny/.DS_Store
