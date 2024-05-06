@@ -16,12 +16,12 @@ tab_gene_data_UI <- function(id) {
     DT::DTOutput(ns("data_selection_data")) %>%
       shinycssloaders::withSpinner(proxy.height = 150),
     
-    shiny::h4("Multi-omics Resources", class = "top-magin-m"),
-    DT::DTOutput(ns("data_external")) %>%
-      shinycssloaders::withSpinner(proxy.height = 150),
-    
     shiny::h4("DMRs", class = "top-margin-m"),
     DT::DTOutput(ns("data_dmrs")) %>%
+      shinycssloaders::withSpinner(proxy.height = 150),
+    
+    shiny::h4("Multi-omics Resources", class = "top-magin-m"),
+    DT::DTOutput(ns("data_external")) %>%
       shinycssloaders::withSpinner(proxy.height = 150),
 
     shiny::div(
