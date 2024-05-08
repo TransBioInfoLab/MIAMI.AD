@@ -33,7 +33,7 @@ tab_contact_UI <- function(id){
       " and ",
       shiny::tags$b("CpG Summary Statistics"),
       " and/or ",
-      shiny::tags$b("DMR Dummary Statistics"),
+      shiny::tags$b("DMR Summary Statistics"),
       " files below to the contact information. Since data files can be large,",
       " please upload them to an online storage site (e.g., Dropbox, Google",
       " Drive, or Box), and share the download link with us."
@@ -50,12 +50,12 @@ tab_contact_UI <- function(id){
           "conducting a genome-wide study of more than 100k CpGs"
         ),
         shiny::tags$li(
-          "utilizing Illumina 450k, EPIC, or EPICv2 arrays."
+          "utilizing Illumina 450k, EPIC, or EPICv2 arrays"
         )
       )
     ),
 
-    shiny::h6("Paper Metadata", class = "top-margin-m"),
+    shiny::h6(shiny::tags$b("Paper Metadata"), class = "top-margin-m"),
     shiny::tags$p(
       "Please provide the following information about your publication:",
     ),
@@ -108,7 +108,7 @@ tab_contact_UI <- function(id){
       )
     ),
 
-    shiny::h6("CpG Summary Statistics", class = "top-margin-m"),
+    shiny::h6(shiny::tags$b("CpG Summary Statistics"), class = "top-margin-m"),
     shiny::tags$p(
       "Please provide summary statistics in a (preferably compressed) text",
       " file (e.g., .csv, .csv.gz, .tsv.gz), with the following columns:"
@@ -158,7 +158,7 @@ tab_contact_UI <- function(id){
       " then please save the results as separate files."
     ),
 
-    shiny::h6("DMR Summary Statistics", class = "top-margin-m"),
+    shiny::h6(shiny::tags$b("DMR Summary Statistics"), class = "top-margin-m"),
     shiny::tags$p(
       "Please provide summary statistics in a text file (e.g., .csv, .tsv),",
       " with the following columns:"

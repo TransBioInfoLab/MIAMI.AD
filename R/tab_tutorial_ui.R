@@ -38,14 +38,14 @@ tab_tutorial_UI <- function(id) {
           shiny::tags$li(
             shiny::tags$b("Display Plots: "),
             "Visual representations of the data can be found here, including",
-            " Manhattan plots, Venn diagrams, forest plots, and genomic", 
+            " Manhattan plots, Venn diagrams, forest plots, and genomic",
             " annotations, annotation from the UCSC track hub, and computed",
             " chromatin states from the NIH Roadmap Epigenomics project",
             shiny::tags$sup("4")
           )
         )
       ),
-      
+
       shiny::tags$p(
         "The source code for MIAMI-AD is available at ",
         shiny::tags$a(
@@ -55,7 +55,7 @@ tab_tutorial_UI <- function(id) {
         ),
         "."
       ),
-      
+
       shiny::h3(shiny::tags$b("The Genome-wide Query tool")),
       shiny::tags$p(
         "Designed to allow users to select CpGs across all chromosomes based",
@@ -115,9 +115,12 @@ tab_tutorial_UI <- function(id) {
           )
         )
       ),
-      
-      shiny::h3("FIGURE 2"),
-      
+
+      shiny::div(
+        align = "center",
+        shiny::imageOutput(ns("figure1"), height = "100%", width = "100%")
+      ),
+
       shiny::h3(shiny::tags$b("The Gene Query tool")),
       shiny::tags$p(
         "This tool provides detailed information on DNAm differences within a",
@@ -130,7 +133,7 @@ tab_tutorial_UI <- function(id) {
             " except that on the left panel, the user additionally specifies",
             " the name of the gene (or region) they want to explore and",
             " selects the desired annotation tracks such as UCSC gene,",
-            " ENSEMBL genes, ENSEMBL transcripts, chromatin states,", 
+            " ENSEMBL genes, ENSEMBL transcripts, chromatin states,",
             " and CpG islands (",
             shiny::tags$b("Figure 2"),
             ")"
@@ -139,12 +142,22 @@ tab_tutorial_UI <- function(id) {
             "Upon completing the inputs, the ",
             shiny::tags$b("Display Data"),
             " tab on the right panel presents a summary of statistics for CpGs",
-            " located within a specified range of 2 kb around the gene of",
+            " located within a specified range of ",
+            shiny::tags$u("+"),
+            "2 kb around the gene of",
             " interest. This summary includes information on the direction of",
             " association and the values of the statistical measures (e.g.,",
             " odds ratio, t-statistic, and the corresponding ",
             shiny::tags$em("P"),
-            " values)."
+            ' values). In addition, under “Multi-omics Resources”, links to',
+            " GWAS catalog",
+            shiny::tags$sup("5"),
+            ", NIAGADS GenomicsDB",
+            shiny::tags$sup("6"),
+            ", and the Agora brain gene expression",
+            shiny::tags$sup("7"),
+            " databases are presented, providing users a more comprehensive",
+            " view on the genomic region or gene."
           ),
           shiny::tags$li(
             "The ",
@@ -158,9 +171,12 @@ tab_tutorial_UI <- function(id) {
           )
         )
       ),
-      
-      shiny::h3("FIGURE 3"),
-      
+
+      shiny::div(
+        align = "center",
+        shiny::imageOutput(ns("figure2"), height = "100%", width = "100%")
+      ),
+
       shiny::h3(shiny::tags$b("The CpG Query tool")),
       shiny::tags$p(
         "This tool offers information about specific CpGs of interest (",
@@ -181,13 +197,22 @@ tab_tutorial_UI <- function(id) {
             shiny::tags$b("Display Data"),
             " tab, the tool provides not only summary statistics for the",
             " selected CpGs but also valuable annotations for each CpG. These",
-            " annotations include CpG location, genes associated with the CpG,",
-            " and mQTL (methylation quantitative trait loci) information",
-            " obtained from a recent large-scale meta-analysis",
+            " annotations include CpG location and genes associated with the",
+            ' CpG. Under “Multi-omics and Multi-tissue Resources”, the tool',
+            " provides links to mQTL (methylation quantitative trait loci)",
+            "information obtained from a recent large-scale meta-analysis",
+            shiny::tags$sup("8"),
+            ", correlation of blood DNAm with brain DNAm at the particular CpG",
+            shiny::tags$sup("9"),
+            ", GWAS catalog",
             shiny::tags$sup("5"),
-            ". Additionally, the tool includes the correlation of blood DNAm",
-            " with brain DNAm at the particular CpG",
+            ", NIAGADS GenomicsDB",
             shiny::tags$sup("6"),
+            ", and the Agora brain gene expression",
+            shiny::tags$sup("7"),
+            "databases. Additionally, the tool includes the correlation of",
+            " blood DNAm with brain DNAm at the particular CpG",
+            shiny::tags$sup("9"),
             ", offering insights into potential cross-tissue relationships.",
             " Furthermore, MIAMI-AD searches among recently published",
             " epigenetic clocks and identifies matches if a selected CpG is a",
@@ -204,9 +229,12 @@ tab_tutorial_UI <- function(id) {
           )
         )
       ),
-      
-      shiny::h3("FIGURE 4"),
-      
+
+      shiny::div(
+        align = "center",
+        shiny::imageOutput(ns("figure3"), height = "100%", width = "100%")
+      ),
+
       shiny::h3(shiny::tags$b("The Epigenetic Clock Query tool")),
       shiny::p(
         "This tool serves the purpose of comparing with and selecting CpGs",
@@ -245,9 +273,12 @@ tab_tutorial_UI <- function(id) {
           )
         )
       ),
-      
-      shiny::h3("FIGURE 5"),
-      
+
+      shiny::div(
+        align = "center",
+        shiny::imageOutput(ns("figure4"), height = "100%", width = "100%")
+      ),
+
       shiny::h3(shiny::tags$b("Citations")),
       shiny::p(
         "Lukacsovich D et al. (2023) MIAMI-AD (Methylation in Aging and",
@@ -262,7 +293,7 @@ tab_tutorial_UI <- function(id) {
       shiny::tags$p(
         "Please also cite the original study papers in which the results were obtained."
       ),
-      
+
       shiny::h3(shiny::tags$b("References")),
       shiny::div(
         shiny::tags$ol(
@@ -306,6 +337,32 @@ tab_tutorial_UI <- function(id) {
             shiny::tags$em("Nat Biotechnol "),
             shiny::tags$b("33"),
             ", 345-6 (2015)."
+          ),
+          shiny::tags$li(
+            "Sollis, E. et al. The NHGRI-EBI GWAS Catalog: knowledgebase and",
+            " deposition resource. ",
+            shiny::tags$em("Nucleic Acids Res"),
+            " ",
+            shiny::tags$b("51"),
+            ", D977-D985 (2023)."
+          ),
+          shiny::tags$li(
+            "Greenfest-Allen, E. et al. NIAGADS Alzheimer's GenomicsDB: A",
+            " resource for exploring Alzheimer's disease genetic and genomic",
+            " knowledge ",
+            shiny::tags$em("Alzheimers Dement"),
+            " ",
+            shiny::tags$b("20"),
+            ", 1123-1136 (2024)."
+          ),
+          shiny::tags$li(
+            "Sage Bionetworks. Agora: Discover Alzheimer's Disease Genes.",
+            shiny::tags$a(
+              href = "https://agora.adknowledgeportal.org/",
+              "https://agora.adknowledgeportal.org/",
+              target = "_blank"
+            ),
+            " (2024)."
           ),
           shiny::tags$li(
             "Min, J.L. et al. Genomic and phenotypic insights from an atlas of",
