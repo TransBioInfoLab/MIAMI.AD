@@ -15,7 +15,7 @@ tab_contact_server <- function(id, common) {
       # define plotting options
       full_options <- list(
         columnDefs = list(
-          list(className = 'dt-center', targets = 1:6)
+          list(className = 'dt-center', targets = 1:5)
         ),
         autowidth = FALSE
       )
