@@ -8,10 +8,10 @@ tab_contact_UI <- function(id){
       "Contact & Contribute"
     ),
     
-    shiny::h3(shiny::tags$b("Contact")),
+    shiny::h5(shiny::tags$b("Contact")),
     shiny::p(
-      "For questions, comments, or to contribute to",
-      " MIAMI-AD, you can contact us at:"),
+      "For questions, comments, or to contribute to  MIAMI-AD, please contact",
+      " us at:"),
     shiny::tags$p(
       "Lily Wang (",
       shiny::tags$a(
@@ -26,31 +26,52 @@ tab_contact_UI <- function(id){
     ),
     shiny::br(),
 
-    shiny::h3(shiny::tags$b("Contribute")),
+    shiny::h5(shiny::tags$b("Contribute")),
     shiny::tags$p(
-      "If you would like to add your publication's data to MIAMI-AD, you can",
-      " contact us at the above accounts, and send us your data. We need the",
-      " following information to be able to add your data to MIAMI-AD. As the",
-      " accompanying data would be fairly large in many cases, instead of",
-      " emailing the data to us, please upload it to a publicly accessible",
-      " online storage site (ex: dropbox, google drive, or box), and send us",
-      " a download link."
+      "To contribute your publication's data to MIAMI-AD, please send the ",
+      shiny::tags$b("Metadata of publication"),
+      " and ",
+      shiny::tags$b("CpG Summary Statistics"),
+      " and/or ",
+      shiny::tags$b("DMR Dummary Statistics"),
+      " files below to the contact information. Since data files can be large,",
+      " please upload them to an online storage site (e.g., Dropbox, Google",
+      " Drive, or Box), and share the download link with us."
+    ),
+    shiny::tags$p(
+      "Published studies in MAIMI-AD meet three criteria:"
+    ),
+    shiny::div(
+      shiny::tags$ol(
+        shiny::tags$li(
+          "having more than 100 total samples from human subjects"
+        ),
+        shiny::tags$li(
+          "conducting a genome-wide study of more than 100k CpGs"
+        ),
+        shiny::tags$li(
+          "utilizing Illumina 450k, EPIC, or EPICv2 arrays."
+        )
+      )
     ),
 
-    shiny::h4("Paper Metadata", class = "top-margin-m"),
+    shiny::h6("Paper Metadata", class = "top-margin-m"),
     shiny::tags$p(
-      "In order to add your data to our database, we need the following",
-      " information about your paper and the dataset",
+      "Please provide the following information about your publication:",
     ),
     shiny::div(
       shiny::tags$ul(
+        shiny::tags$li(
+          shiny::tags$b("Title"),
+          " - Paper's title"
+        ),
         shiny::tags$li(
           shiny::tags$b("PMID"),
           " - Your paper's PMID"
           ),
         shiny::tags$li(
           shiny::tags$b("Author"),
-          " - The first author of your paper"
+          " - First author of your paper"
         ),
         shiny::tags$li(
           shiny::tags$b("Year"),
@@ -61,90 +82,66 @@ tab_contact_UI <- function(id){
           " - A ", shiny::tags$b("brief"), " description of the data"
         ),
         shiny::tags$li(
-          shiny::tags$b("Label_Phenotype"),
-          " - The phenotype to show on the displayed tables"
-        ),
-        shiny::tags$li(
-          shiny::tags$b("CpG_Phenotype"),
-          " - The Phenotype to show on the CpG Query metaplot titles"
-        ),
-        shiny::tags$li(
-          shiny::tags$b("Sex_Specific"),
-          " - Whether the data is sex-specific, and if so whether it is",
-          " specific to a given gender, or is measuring sex-effects"
-        ),
-        shiny::tags$li(
-          shiny::tags$b("Statistics_Label"),
-          " - A very brief description of your CpG statistics, to be displayed",
-          " on tables. If you are only submitting DMR data, you can ignore this"
-        ),
-        shiny::tags$li(
-          shiny::tags$b("Statistics"),
-          " - Whether the CpG statistics are Odds Ratio (OR), or something",
-          " else (Estimate).  If you are only submitting DMR data, you can",
-          " ignore this"
+          shiny::tags$b("Tissue"),
+          " - The tissue that DNA methylation is measured on"
         ),
         shiny::tags$li(
           shiny::tags$b("Phenotype"),
-          " - The phenotype(s) that best describe your dataset. If you are",
-          " using a new phenotype, please keep them short, and avoid special",
-          " characters"
+          " - The phenotype of the study (e.g., AD biomarkers, AD",
+          " Neuropathology, Aging, Dementia Clinical Diagnosis, MCI, or Sex)"
+        ),
+        shiny::tags$li(
+          shiny::tags$b("Sex_Specific"),
+          " - Specify if the study-result is sex-specific, and if so whether",
+          " it is specific to a given gender, or if it measures sex-effects"
+        ),
+        shiny::tags$li(
+          shiny::tags$b("Statistics"),
+          " - Statistics in the Summary Statistics dataset (see below) (e.g.,",
+          " OR for AD, estimate for age effect)"
         ),
         shiny::tags$li(
           shiny::tags$b("Full_EWAS"),
-          " - Whether the CpG data contains all/most CpGs from an array, or",
-          " only a select subset. If you are only submitting DMR data, you can",
-          " ignore this"
+          " - Specify if summary statistics include all (or most) CpGs, or",
+          " just a subset from an array (omit if submitting only DMR data)"
         )
       )
     ),
-    shiny::tags$p(
-      "If your data contains multiple, distinctly analysed datasets (ex: you",
-      " analysed differences in males and females separately, then please save",
-      " them as separate files."
-    ),
 
-    shiny::h4("CpG Data", class = "top-margin-m"),
+    shiny::h6("CpG Summary Statistics", class = "top-margin-m"),
     shiny::tags$p(
-      "For CpG data, we need the data in a matrix, preferably as a compressed",
-      " text file (ex: .csv.gz or .tsv.gz), with the following columns:"
+      "Please provide summary statistics in a (preferably compressed) text",
+      " file (e.g., .csv, .csv.gz, .tsv.gz), with the following columns:"
     ),
     
     shiny::div(
       shiny::tags$ul(
         shiny::tags$li(
-          shiny::tags$b("cpg"),
-          " - the names of the cpg probes"
+          shiny::tags$b("CpG"),
+          " - Names of the CpG probes"
         ),
         shiny::tags$li(
           shiny::tags$b("sample_group"),
-        " - The dataset, or source that the raw data was collected from. If",
-        " the results are a meta-data analysis, separate the sources by a",
-        " space and plus sign ( + ). Otherwise, please don't use plus (+) or",
-        " semi-colon (;) in the names"
+        " - The cohorts that raw data was collected from. For meta-analysis,",
+        " separate the cohorts with a space and a plus sign (+). Otherwise",
+        " please avoid using plus (+) or semi-colon (;) in cohort names. For",
+        " example: AIBL + ADNI"
         ),
         shiny::tags$li(
           shiny::tags$b("estimate"),
-          " - the measured statistical estimate value"
+          " - Estimated effect size"
         ),
         shiny::tags$li(
           shiny::tags$b("std_err"),
-          " - the standard error on the statistical estimate"
-        ),
-        shiny::tags$li(
-          shiny::tags$b("statistics_value"),
-          " - The value of the test statistics. In most cases, this will be",
-          " the same as the estimate. If you are measuring Odds Ratio (OR),",
-          " this should be >0, centered on 1, and estimate should be centered",
-          " on 0."
+          " - Standard error of the estimated effect size"
         ),
         shiny::tags$li(
           shiny::tags$b("pvalue"),
-          " - the significance p-value"
+          " - Nominal P-value"
         ),
         shiny::tags$li(
           shiny::tags$b("fdr"),
-          " - multiple testing adjusted p-value"
+          " - Multiple testing adjusted P-value"
         )
       )
     ),
@@ -154,50 +151,63 @@ tab_contact_UI <- function(id){
     ),
     DT::DTOutput(ns("example_cpg")) %>%
       shinycssloaders::withSpinner(proxy.height = 150),
-
-    shiny::h4("DMR Data", class = "top-margin-m"),
+    
     shiny::tags$p(
-      "For DMR data, we need the data in a matrix, with the following columns:"
+      "Note that if your study includes results for multiple phenotypes or",
+      " subgroups (e.g., you analyzed male and female samples separately),",
+      " then please save the results as separate files."
+    ),
+
+    shiny::h6("DMR Summary Statistics", class = "top-margin-m"),
+    shiny::tags$p(
+      "Please provide summary statistics in a text file (e.g., .csv, .tsv),",
+      " with the following columns:"
     ),
     
     shiny::div(
       shiny::tags$ul(
         shiny::tags$li(
           shiny::tags$b("region"),
-          " - The genomic region of the DMR in the from CHR:START-END. If this",
+          " - Genomic region of the DMRs in the format CHR:START-END. If this",
           " is provided, there is no need to provide ", shiny::em("chr"), ", ",
           shiny::em("start"), ", or ", shiny::em("end"), "."
         ),
         shiny::tags$li(
           shiny::tags$b("chr"),
-          " - The chromosome the DMR is located on"
+          " - The chromosome the DMR is located on. If ",
+          shiny::em("region"),
+          " is provided, this does not need to be provided."
         ),
         shiny::tags$li(
           shiny::tags$b("start"),
-          " - The genomic start position of the DMR"
+          " - The genomic start position of the DMR. If ",
+          shiny::em("region"),
+          " is provided, this does not need to be provided."
         ),
         shiny::tags$li(
           shiny::tags$b("end"),
-          " - The genomic end position of the DMR"
+          " - The genomic end position of the DMR. If ",
+          shiny::em("region"),
+          " is provided, this does not need to be provided."
         ),
         shiny::tags$li(
-          shiny::tags$b("source"),
-          " - The dataset, or source that the raw data was collected from. If",
-          " the results are a meta-data analysis, separate the sources by a",
-          " space and plus sign ( + ). Otherwise, please don't use plus (+) or",
-          " semi-colon (;) in the names"
+          shiny::tags$b("sample_group"),
+          " - The cohorts that raw data was collected from. For meta-analysis,",
+          " separate the cohorts with a space and a plus sign (+). Otherwise",
+          " please avoid using plus (+) or semi-colon (;) in cohort names. For",
+          " example: AIBL + ADNI"
         ),
         shiny::tags$li(
           shiny::tags$b("nProbes"),
           " - The number of CpG probes in the DMR"
         ),
         shiny::tags$li(
-          shiny::tags$b("pValue"),
-          " - the significance p-value"
+          shiny::tags$b("pvalue"),
+          " - Nominal P-value"
         ),
         shiny::tags$li(
-          shiny::tags$b("adj.pValue"),
-          " - multiple testing adjusted p-value"
+          shiny::tags$b("fdr"),
+          " - Multiple testing adjusted P-value"
         ),
         shiny::tags$li(
           shiny::tags$b("direction"),
@@ -210,7 +220,15 @@ tab_contact_UI <- function(id){
       "Example:"
     ),
     DT::DTOutput(ns("example_dmr")) %>%
-      shinycssloaders::withSpinner(proxy.height = 150)
+      shinycssloaders::withSpinner(proxy.height = 150),
+    
+    shiny::tags$p(
+      "Note that if your study includes results for multiple phenotypes or",
+      " subgroups (e.g., you analyzed male and female samples separately),",
+      " then please save the results as separate files."
+    ),
+    
+    shiny::br()
     
   )
 }
