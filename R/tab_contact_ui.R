@@ -123,9 +123,9 @@ tab_contact_UI <- function(id){
         shiny::tags$li(
           shiny::tags$b("sample_group"),
         " - The cohorts that raw data was collected from. For meta-analysis,",
-        " separate the cohorts with a space and a plus sign (+). Otherwise",
-        " please avoid using plus (+) or semi-colon (;) in cohort names. For",
-        " example: AIBL + ADNI"
+        " separate the cohorts with a space and a plus sign (+). For example:",
+        " AIBL + ADNI. Otherwise, please avoid using plus (+) or semi-colon",
+        " (;) in cohort names."
         ),
         shiny::tags$li(
           shiny::tags$b("estimate"),
@@ -141,7 +141,7 @@ tab_contact_UI <- function(id){
         ),
         shiny::tags$li(
           shiny::tags$b("fdr"),
-          " - Multiple testing adjusted P-value"
+          " - Multiple comparison adjusted P-value"
         )
       )
     ),
@@ -167,7 +167,7 @@ tab_contact_UI <- function(id){
     shiny::div(
       shiny::tags$ul(
         shiny::tags$li(
-          shiny::tags$b("region"),
+          shiny::tags$b("DMR"),
           " - Genomic region of the DMRs in the format CHR:START-END. If this",
           " is provided, there is no need to provide ", shiny::em("chr"), ", ",
           shiny::em("start"), ", or ", shiny::em("end"), "."
@@ -193,9 +193,9 @@ tab_contact_UI <- function(id){
         shiny::tags$li(
           shiny::tags$b("sample_group"),
           " - The cohorts that raw data was collected from. For meta-analysis,",
-          " separate the cohorts with a space and a plus sign (+). Otherwise",
-          " please avoid using plus (+) or semi-colon (;) in cohort names. For",
-          " example: AIBL + ADNI"
+          " separate the cohorts with a space and a plus sign (+). For example:",
+          " AIBL + ADNI. Otherwise, please avoid using plus (+) or semi-colon",
+          " (;) in cohort names."
         ),
         shiny::tags$li(
           shiny::tags$b("nProbes"),
@@ -206,12 +206,12 @@ tab_contact_UI <- function(id){
           " - Nominal P-value"
         ),
         shiny::tags$li(
-          shiny::tags$b("fdr"),
-          " - Multiple testing adjusted P-value"
+          shiny::tags$b("adjusted.P"),
+          " - Multiple comparison adjusted P-value"
         ),
         shiny::tags$li(
           shiny::tags$b("direction"),
-          " - Whether the DMR is up- or down-regulated"
+          " - Whether the DMR is hyper- or hypo- methylated"
         )
       )
     ),
