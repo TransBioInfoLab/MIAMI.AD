@@ -31,4 +31,4 @@ Or running the `app.r` file in the main directory.
 
 ### Navigation
 
-For instructions on navigating or using the server, click on the **Tutorial** tab. Alternatively, in each tab there is a **Start Tutorial** button at the top left, that will give a brief overview of the relevant tab.
+For instructions on using the database, click on the **Tutorial** tab. Alternatively, in each tab there is a **Start Tutorial** button at the top left, which gives a brief overview of the relevant tab.
