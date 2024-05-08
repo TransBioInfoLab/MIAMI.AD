@@ -136,7 +136,8 @@ tab_cpg_data_server <- function(id, common, df_toplot, df_selection_dt, input_se
 
       # get cpg statistics
       #df_stats <- get_cpg_statistics(cpgs, Datasets, method="Name")
-      df_stats <- get_cpg_sql_statistics(cpgs, Datasets)
+      df_stats <- get_cpg_sql_statistics(cpgs, Datasets) %>%
+        dplyr::arrange(.data$pvalue)
 
       return (df_stats)
     })

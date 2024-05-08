@@ -104,6 +104,7 @@ tab_gene_data_server <- function(
         dplyr::select(
           "DMR", "dataset", sample_group = "source", "phenotype", "direction",
           "nProbes", "pValue") %>%
+        dplyr::arrange(.data$pValue) %>%
         dplyr::mutate(pValue = format_pvalues_column(.data$pValue),
                       nProbes = as.integer(.data$nProbes))
     })
@@ -181,7 +182,8 @@ tab_gene_data_server <- function(
 
       # merge cpg positions and statistics
       df_cpg_stats <- create_statistics_table(
-        df_stats, df_labels, df_cpg_targets, table_category = "Gene")
+        df_stats, df_labels, df_cpg_targets, table_category = "Gene") %>%
+        dplyr::arrange(.data$pValue)
 
       return (df_cpg_stats)
     })
