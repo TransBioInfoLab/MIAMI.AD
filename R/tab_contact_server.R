@@ -10,7 +10,8 @@ tab_contact_server <- function(id, common) {
     # display tables
     output$example_cpg <- DT::renderDT({
       # get dataframe
-      df_data <- ls_contribute$data_cpg
+      df_data <- ls_contribute$data_cpg %>%
+        dplyr::arrange(.data$pvalue)
       
       # define plotting options
       full_options <- list(
@@ -31,7 +32,8 @@ tab_contact_server <- function(id, common) {
     
     output$example_dmr <- DT::renderDT({
       # get dataframe
-      df_data <- ls_contribute$data_dmr
+      df_data <- ls_contribute$data_dmr %>%
+        dplyr::arrange(.data$adjusted.P)
       
       # define plotting options
       full_options <- list(
