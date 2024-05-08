@@ -39,6 +39,11 @@ tab_contact_UI <- function(id){
       " Drive, or Box), and share the download link with us."
     ),
     shiny::tags$p(
+      "If your study includes results for multiple phenotypes or subgroups",
+      " (e.g., you analyzed male and female samples separately), then please",
+      " save the results as separate metadata and summary statistics files."
+    ),
+    shiny::tags$p(
       "Published studies in MAIMI-AD meet three criteria:"
     ),
     shiny::div(
@@ -151,12 +156,6 @@ tab_contact_UI <- function(id){
     ),
     DT::DTOutput(ns("example_cpg")) %>%
       shinycssloaders::withSpinner(proxy.height = 150),
-    
-    shiny::tags$p(
-      "Note that if your study includes results for multiple phenotypes or",
-      " subgroups (e.g., you analyzed male and female samples separately),",
-      " then please save the results as separate files."
-    ),
 
     shiny::h6(shiny::tags$b("DMR Summary Statistics"), class = "top-margin-m"),
     shiny::tags$p(
@@ -221,12 +220,6 @@ tab_contact_UI <- function(id){
     ),
     DT::DTOutput(ns("example_dmr")) %>%
       shinycssloaders::withSpinner(proxy.height = 150),
-    
-    shiny::tags$p(
-      "Note that if your study includes results for multiple phenotypes or",
-      " subgroups (e.g., you analyzed male and female samples separately),",
-      " then please save the results as separate files."
-    ),
     
     shiny::br()
     
