@@ -3,6 +3,7 @@ tab_download_dmrs_server <- function(id, common, phenotype) {
 
     df_labels <- common$raw_data$labels
     df_downloads <- common$raw_data$downloads
+    df_dmr_full <- common$raw_data$DMR
 
     # Create reactive tables to store dataset data
     df_datasets <- create_empty_reactive_table(source = TRUE)
@@ -23,6 +24,14 @@ tab_download_dmrs_server <- function(id, common, phenotype) {
                                            source = TRUE,
                                            has_cpg = FALSE
                      )
+                     
+                     df_data <- df_datasets() %>%
+                       dplyr::filter(
+                         paste0(.data$Dataset, "_", .data$Source) %in%
+                           paste0(df_dmr_full$dataset, "_", df_dmr_full$source)
+                       )
+                     
+                     df_datasets(df_data)
                    }
 
                  }, ignoreInit = FALSE, ignoreNULL = FALSE)
@@ -39,22 +48,6 @@ tab_download_dmrs_server <- function(id, common, phenotype) {
       # get dataframe
       df_data <- df_datasets() %>%
         dplyr::select(-"PMID_Excel", -"Select_Bool", -"Full_EWAS")
-      
-      if (nrow(df_data) > 0){
-        df_data$Download <- create_download_link(df_data$Dataset,
-                                                 df_data$Source,
-                                                 df_downloads,
-                                                 method = "DMR")
-        df_data <- df_data %>%
-          dplyr::filter(nchar(.data$Download) > 0) %>%
-          dplyr::select(-"Download")
-      }
-      # } else {
-      #   df_data$Download <- character()
-      # }
-      # 
-      # df_data <- df_data %>%
-      #   dplyr::filter(nchar(.data$Download) > 0)
 
       shiny::validate(
         shiny::need(
@@ -86,7 +79,7 @@ tab_download_dmrs_server <- function(id, common, phenotype) {
         escape = c(-5, -7),
         selection = "none",
         options = full_options,
-        callback = htmlwidgets::JS(checkbox_js("dmr_selection_targets", session$ns, 7))
+        callback = htmlwidgets::JS(checkbox_js("dmr_selection_targets", session$ns, 8))
       ) %>%
         DT::formatStyle(columns = c('Dataset'), fontweight = 'bold',
                     `text-align` = 'left')
@@ -143,13 +136,11 @@ tab_download_dmrs_server <- function(id, common, phenotype) {
           return(openxlsx::saveWorkbook(wb, file = filename))
         }
         
-        df_stats <- common$raw_data$DMR
-        
         for (index in 1:nrow(df_data)) {
           Dataset <- df_data$Dataset[[index]]
           Source <- df_data$Source[[index]]
           
-          df_dmr <- df_stats %>%
+          df_dmr <- df_dmr_full %>%
             dplyr::filter(
               .data$dataset == Dataset,
               .data$source == Source
