@@ -67,7 +67,7 @@ create_cpg_conditional_input <- function(ns = shiny::NS(NULL), id = "") {
         "input['%s-input_type'] == 'file'",
         id),
       shiny::fileInput(
-        inputId = ns("read_cpg_file"),
+        inputId = ns("select_file"),
         label = shiny::tags$b(
           "Upload a file of comma- or space-separated CpGs"))
     )

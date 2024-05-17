@@ -21,7 +21,7 @@ tab_cpg_data_server <- function(id, common, df_toplot, df_selection_dt, input_se
       input_selection_ls <- input_selection()
       input_type <- input_selection_ls$input_type
       select_cpgId <- input_selection_ls$select_cpgId
-      select_file <- input_selection_ls$read_cpg_file
+      select_file <- input_selection_ls$select_file
 
       if (input_type == "manual"){
         # separate cpgs by comma (,), empty spaces ( +), and tabs (\t)
@@ -32,7 +32,7 @@ tab_cpg_data_server <- function(id, common, df_toplot, df_selection_dt, input_se
       }
 
       if (input_type == "file"){
-        if (is.null(select_file)){
+        if (is.null(select_file)) {
           return (ls())
         }
         filename <- select_file$datapath
@@ -275,11 +275,7 @@ tab_cpg_data_server <- function(id, common, df_toplot, df_selection_dt, input_se
         openxlsx::writeData(wb, df_datasets, sheet="Dataset Abbreviations")
 
         openxlsx::addWorksheet(wb, "Annotations")
-        df_annot <- df_cpg_targets() %>%
-          dplyr::select(c(-"mQTL", -"London")) %>%
-          dplyr::mutate(
-            mQTL = create_mQTL_Link(.data$cpg, cpg_mQTL, excel=TRUE),
-            London = create_London_Link(.data$cpg, cpg_London, excel=TRUE))
+        df_annot <- df_cpg_targets()
         openxlsx::writeData(wb, df_annot, sheet = "Annotations")
 
         openxlsx::addWorksheet(wb, "Individual Datasets")
