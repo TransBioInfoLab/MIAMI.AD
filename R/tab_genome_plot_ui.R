@@ -11,7 +11,7 @@ tab_genome_plot_UI <- function(id) {
       caption = "Generating Venn Diagram...",
       proxy.height = 200
     ),
-    shiny::h4("Manhattan Plots", class = "top-margin-s"),
+    shiny::h4("Miami Plots", class = "top-margin-s"),
     shinycssloaders::withSpinner(
       shiny::uiOutput(ns("plot_manhattan"), height = "auto"),
       caption = "Generating Manhattan Plots...",

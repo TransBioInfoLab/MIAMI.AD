@@ -84,7 +84,7 @@ tab_genome_plot_server <- function(id, common, df_toplot, df_count, df_selection
         source <- df_plot_table$Source[index]
 
         image_path <- file.path(
-          "Plots/Manhattan",
+          "Plots/Miami",
           paste0(
             common$genome_version(), ".", dataset, ".", source, ".jpg"
           ) %>%
