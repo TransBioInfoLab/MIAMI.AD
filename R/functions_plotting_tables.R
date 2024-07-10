@@ -246,6 +246,9 @@ create_plotting_buttons <- function(
 fill_plotting_table <- function(df_datasets, selection=TRUE){
   # get plotting dataframe
   df_data_update <- df_datasets()
+  if (nrow(df_data_update) == 0) {
+    return()
+  }
 
   # set all checkboxest to 1 value
   df_data_update$Select_Bool <- selection
