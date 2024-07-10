@@ -194,3 +194,22 @@ primaryButton <- function(...) {
     addClass("btn-primary")$
     allTags()
 }
+
+#' Create an error message when clicking on Select All or Deselect All when
+#'   there is nothing to click on
+#' @param select_click a boolean indicating whether either button was clicked
+#' @param df_datasets a dataframe that we check if it has 0 rows or not
+create_select_error <- function(select_click, df_datasets) {
+  if (select_click() & nrow(df_datasets()) == 0) {
+    select_error <- paste0(
+      "The 'Select All' and 'Deselect All' buttons are for selecting",
+      " datasets. Please select Phenotypes in the tab to the left before",
+      " clicking on the buttons. Thank you."
+    )
+  } else {
+    select_error <- ""
+  }
+  
+  select_error  
+}
+

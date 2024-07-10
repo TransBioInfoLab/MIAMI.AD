@@ -1,6 +1,13 @@
 tab_gene_datasets_server <- function(id, common, phenotype) {
   shiny::moduleServer(id, function(input, output, session) {
+    
     raw_data <- common$raw_data
+    select_click <- shiny::reactiveVal(FALSE)
+    select_error <- shiny::reactive(
+      create_select_error(select_click, df_datasets)
+    )
+    
+    output$select_error <- shiny::renderText(select_error())
 
     # define tables from raw_data
     df_tracks_read <- raw_data$track_list
@@ -15,6 +22,9 @@ tab_gene_datasets_server <- function(id, common, phenotype) {
     # update choices based on selections
     shiny::observeEvent(phenotype(), {
       select_phenotype <- phenotype()
+      if (length(select_phenotype) > 0) {
+        select_click(FALSE)
+      }
 
       if (is.null(select_phenotype)){
         df_datasets(create_empty_dataframe(source = TRUE))
@@ -57,17 +67,24 @@ tab_gene_datasets_server <- function(id, common, phenotype) {
     })
 
     # Clear plotting data
-    shiny::observeEvent(input$command_clear,
-                 {
-                   fill_plotting_table(df_datasets, selection=FALSE)
-                 }, ignoreInit = TRUE)
+    shiny::observeEvent(input$command_clear, {
+      if (nrow(df_datasets()) == 0) {
+        select_click(TRUE)
+      } else {
+        fill_plotting_table(df_datasets, selection = FALSE)
+        select_click(FALSE)
+      }
+    }, ignoreInit = TRUE)
 
     # Update Plotting Data
-    shiny::observeEvent(input$command_fill,
-                 {
-                   fill_plotting_table(df_datasets, selection=TRUE)
-
-                 }, ignoreInit = TRUE)
+    shiny::observeEvent(input$command_fill, {
+      if (nrow(df_datasets()) == 0) {
+        select_click(TRUE)
+      } else {
+        fill_plotting_table(df_datasets, selection = TRUE)
+        select_click(FALSE)
+      }
+    }, ignoreInit = TRUE)
 
     # Display All Datasets
     output$data_selection_targets <- DT::renderDT({

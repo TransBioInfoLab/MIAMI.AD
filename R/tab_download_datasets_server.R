@@ -3,28 +3,36 @@ tab_download_datasets_server <- function(id, common, phenotype) {
 
     df_labels <- common$raw_data$labels
     df_downloads <- common$raw_data$downloads
+    select_click <- shiny::reactiveVal(FALSE)
+    select_error <- shiny::reactive(
+      create_select_error(select_click, df_datasets)
+    )
+    
+    output$select_error <- shiny::renderText(select_error())
 
     # Create reactive tables to store dataset data
     df_datasets <- create_empty_reactive_table(source = TRUE)
 
     # update choices based on selections
-    shiny::observeEvent(phenotype(),
-                 {
-                   select_phenotype <- phenotype()
-
-                   if (is.null(select_phenotype)){
-                     df_datasets(create_empty_dataframe(source=TRUE))
-                   } else {
-                     df_labels <- df_labels %>%
-                       dplyr::filter(.data$Phenotype %in% select_phenotype)
-
-                     update_datasets_table(df_datasets,
-                                           df_labels,
-                                           source = TRUE
-                     )
-                   }
-
-                 }, ignoreInit = FALSE, ignoreNULL = FALSE)
+    shiny::observeEvent(phenotype(), {
+      select_phenotype <- phenotype()
+      if (length(select_phenotype) > 0) {
+        select_click(FALSE)
+      }
+      
+      if (is.null(select_phenotype)) {
+        df_datasets(create_empty_dataframe(source=TRUE))
+      } else {
+        df_labels <- df_labels %>%
+          dplyr::filter(.data$Phenotype %in% select_phenotype)
+        
+        update_datasets_table(df_datasets,
+                              df_labels,
+                              source = TRUE
+        )
+      }
+      
+    }, ignoreInit = FALSE, ignoreNULL = FALSE)
 
     # Display All Datasets
     output$data_datasets <- DT::renderDT({
@@ -93,18 +101,25 @@ tab_download_datasets_server <- function(id, common, phenotype) {
       df_datasets(df)
     })
     
-    # Clear download selection
-    shiny::observeEvent(input$command_clear,
-                        {
-                          fill_plotting_table(df_datasets, selection=FALSE)
-                        }, ignoreInit = TRUE)
+    # Clear plotting data
+    shiny::observeEvent(input$command_clear, {
+      if (nrow(df_datasets()) == 0) {
+        select_click(TRUE)
+      } else {
+        fill_plotting_table(df_datasets, selection = FALSE)
+        select_click(FALSE)
+      }
+    }, ignoreInit = TRUE)
     
-    # Update download selection
-    shiny::observeEvent(input$command_fill,
-                        {
-                          fill_plotting_table(df_datasets, selection=TRUE)
-                          
-                        }, ignoreInit = TRUE)
+    # Update Plotting Data
+    shiny::observeEvent(input$command_fill, {
+      if (nrow(df_datasets()) == 0) {
+        select_click(TRUE)
+      } else {
+        fill_plotting_table(df_datasets, selection = TRUE)
+        select_click(FALSE)
+      }
+    }, ignoreInit = TRUE)
     
     # Start Data Download
     output$download_data <- shiny::downloadHandler(

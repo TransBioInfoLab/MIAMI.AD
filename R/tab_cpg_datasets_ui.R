@@ -8,6 +8,10 @@ tab_cpg_datasets_UI <- function(id) {
       lightButton(ns("command_fill"), "Select All", width = "150px"),
       lightButton(ns("command_clear"), "Deselect All", width = "150px")
     ),
+    shiny::div(
+      class = "selection-error",
+      shiny::textOutput(ns("select_error"))
+    ),
     DT::DTOutput(ns("data_selection_targets")),
     shiny::br()
   )

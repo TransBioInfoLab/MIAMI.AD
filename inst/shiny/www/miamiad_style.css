@@ -86,3 +86,12 @@ img {
   margin-top: 10px;
   width: 110px;
 }
+
+.selection-error {
+  font-weight: bold;
+  font-size: 32px;
+  text-align: center;
+  margin-right: 100px;
+  margin-left: 100px;
+  color: red;
+}

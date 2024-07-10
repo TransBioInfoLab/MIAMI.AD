@@ -2,18 +2,34 @@ tab_genome_datasets_server <- function(id, common, phenotype) {
   shiny::moduleServer(id, function(input, output, session) {
 
     df_labels <- common$raw_data$labels
+    select_click <- shiny::reactiveVal(FALSE)
+    select_error <- shiny::reactive(
+      create_select_error(select_click, df_datasets)
+    )
+    
+    output$select_error <- shiny::renderText(select_error())
 
     # Create reactive tables to store display
     df_datasets <- create_empty_reactive_table(source = TRUE, metric = TRUE)
 
     # Update Plotting Data
     shiny::observeEvent(input$command_fill, {
-      fill_plotting_table(df_datasets, selection = TRUE)
+      if (nrow(df_datasets()) == 0) {
+        select_click(TRUE)
+      } else {
+        fill_plotting_table(df_datasets, selection = TRUE)
+        select_click(FALSE)
+      }
     })
 
     # Clear plotting data
     shiny::observeEvent(input$command_clear, {
-      fill_plotting_table(df_datasets, selection = FALSE)
+      if (nrow(df_datasets()) == 0) {
+        select_click(TRUE)
+      } else {
+        fill_plotting_table(df_datasets, selection = FALSE)
+        select_click(FALSE)
+      }
     })
 
     # Display All Datasets
@@ -105,6 +121,10 @@ tab_genome_datasets_server <- function(id, common, phenotype) {
     # update choices based on selection
     shiny::observeEvent(phenotype(), {
       select_phenotype <- phenotype()
+      
+      if (length(select_phenotype) > 0) {
+        select_click(FALSE)
+      }
 
       if (is.null(select_phenotype)){
         df_datasets(create_empty_dataframe(source = TRUE, metric = TRUE))
