@@ -203,8 +203,8 @@ create_select_error <- function(select_click, df_datasets) {
   if (select_click() & nrow(df_datasets()) == 0) {
     select_error <- paste0(
       "The 'Select All' and 'Deselect All' buttons are for selecting",
-      " datasets. Please select Phenotypes in the tab to the left before",
-      " clicking on the buttons. Thank you."
+      " datasets. Please choose Phenotypes in the tab to the left before",
+      " using these buttons. Thank you."
     )
   } else {
     select_error <- ""
