@@ -166,7 +166,7 @@ tab_cpg_data_server <- function(id, common, df_toplot, df_selection_dt, input_se
 
       # get epigenetic dta
       df_family <- df_family %>%
-        dplyr::filter("cpg" %in% selected_cpgs) %>%
+        dplyr::filter(.data$cpg %in% selected_cpgs) %>%
         dplyr::mutate(Coefficient = round(.data$Coefficient, 3)) %>%
         tidyr::pivot_wider(names_from = "Family",
                     values_from = "Coefficient")
