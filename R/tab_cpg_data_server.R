@@ -45,6 +45,7 @@ tab_cpg_data_server <- function(id, common, df_toplot, df_selection_dt, input_se
         # empty spaces ( +), or tabs (\t)
 
         cpgs <- unlist(stringr::str_split(readLines(filename), ",| +|\t|;"))
+        cpgs <- gsub('[\"]', "", cpgs)
         cpgs <- unique(cpgs)
         cpgs <- cpgs[nchar(cpgs) > 0]
 
