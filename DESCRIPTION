@@ -28,6 +28,7 @@ Imports:
     magrittr,
     meta,
     openxlsx,
+    plyr,
     rlang,
     shiny (>= 1.6.0),
     shinycssloaders,

@@ -30,6 +30,18 @@ create_gene_conditional_input <- function(ns = shiny::NS(NULL), id = "") {
     ),
     shiny::conditionalPanel(
       condition = sprintf(
+        "input['%s-input_type'] == 'gene_list'", id),
+      shiny::textInput(
+        inputId = ns("select_gene_ls"),
+        label = shiny::tags$b("Paste a list of comma or space-separated genes"),
+        value = "",
+        placeholder = "Type a list of genes"
+      ),
+      shiny::tags$p("Selected Genes: "),
+      shiny::textOutput(outputId = ns("filter_gene_ls"))
+    ),
+    shiny::conditionalPanel(
+      condition = sprintf(
         "input['%s-input_type'] == 'range'", id),
       shiny::textInput(
         inputId = ns("select_range"),

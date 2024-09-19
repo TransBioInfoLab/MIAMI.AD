@@ -41,18 +41,19 @@ tab_gene_server <- function(id, common){
       return(df_gene_genome)
     })
 
-    shiny::observeEvent(df_gene_genome(),
-                 {
-                   genes <- unique(df_gene_genome()$Gene)
-                   genes <- genes[nchar(genes) > 0]
-
-                   shiny::updateSelectizeInput(
-                     session,
-                     "select_gene",
-                     choices = genes,
-                     server = TRUE)
-
-                 }, ignoreInit = FALSE)
+    shiny::observeEvent(
+      df_gene_genome(),
+      {
+        genes <- unique(df_gene_genome()$Gene)
+        genes <- genes[nchar(genes) > 0]
+        
+        shiny::updateSelectizeInput(
+          session,
+          "select_gene",
+          choices = genes,
+          server = TRUE)
+        
+      }, ignoreInit = FALSE)
 
     # fill default Gene selection
     shiny::observeEvent(input$command_example,{
@@ -65,7 +66,52 @@ tab_gene_server <- function(id, common){
         selected = "APOE",
         server = TRUE
       )
+      
+      shiny::updateTextInput(
+        inputId = "select_gene_ls",
+        value = "APOE, ZNF160, ARGN, NOTAGENE"
+      )
     }, ignoreInit = TRUE)
+    
+    # Adjust selected gene list
+    df_gene_ls <- shiny::reactiveVal({
+      data.frame(
+        Gene = character(),
+        chr = character(),
+        start = integer(),
+        end = integer()
+      )
+    })
+    
+    shiny::observeEvent(input$select_gene_ls, {
+      gene_ls <- input$select_gene_ls
+      
+      gene_ls <- unlist(stringr::str_split(gene_ls, ",| +|\t|;"))
+      gene_ls <- unique(gene_ls)
+      gene_ls <- gene_ls[nchar(gene_ls) > 0]
+      
+      if (length(gene_ls) > 0) {
+        df_genome <- df_gene_genome()
+        df_genome <- dplyr::filter(df_genome, .data$Gene %in% gene_ls)
+        gene_ls <- gene_ls[gene_ls %in% df_genome$Gene]
+      } else {
+        df_genome <- data.frame(
+          Gene = character(),
+          chr = character(),
+          start = integer(),
+          end = integer()
+        )
+      }
+      
+      output$filter_gene_ls <- shiny::renderText(
+        paste0(gene_ls, collapse = ", ")
+      )
+      
+      df_gene_ls(df_genome)
+      
+    }, ignoreInit = TRUE)
+    
+    
 
     # Adjust Genomic Range
     shiny::observeEvent(input$select_gene, {
@@ -105,7 +151,8 @@ tab_gene_server <- function(id, common){
       df_toplot = datasets_mod$df_toplot,
       chr_position_ls = chr_position_ls,
       input_gene = input$select_gene,
-      input_type = shiny::reactive(input$input_type)
+      input_type = shiny::reactive(input$input_type),
+      df_gene_ls = df_gene_ls
     )
 
     tab_gene_plot_server(
@@ -122,14 +169,20 @@ tab_gene_server <- function(id, common){
       datasets_mod$df_toplot() %>%
         nrow()
     })
+    
+    to_listen <- shiny::reactive({list(dataset_count(), input$input_type)})
 
-    shiny::observeEvent(dataset_count(), {
+    shiny::observeEvent(to_listen(), {
       count <- dataset_count()
       if (count == 0){
         shiny::hideTab(inputId = "main_tabs", target = ns("tab_data"))
-        shiny::hideTab(inputId = "main_tabs", target = ns("tab_plot"))
       } else {
         shiny::showTab(inputId = "main_tabs", target = ns("tab_data"))
+      }
+      
+      if (count == 0 || input$input_type == "gene_list") {
+        shiny::hideTab(inputId = "main_tabs", target = ns("tab_plot"))
+      } else {
         shiny::showTab(inputId = "main_tabs", target = ns("tab_plot"))
       }
     })

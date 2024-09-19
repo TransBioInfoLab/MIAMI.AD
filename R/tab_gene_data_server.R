@@ -5,7 +5,8 @@ tab_gene_data_server <- function(
     df_toplot,
     chr_position_ls,
     input_gene,
-    input_type
+    input_type,
+    df_gene_ls
 ) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- shiny::NS(id)
@@ -45,82 +46,38 @@ tab_gene_data_server <- function(
     # Create Tables
     ## External Databases
     output_data_external <- shiny::reactive({
-      # get reactives and inputs
-      chr_position_ls <- chr_position_ls()
-      select_chromosome <- chr_position_ls$chr
-      select_start <- chr_position_ls$start
-      select_end <- chr_position_ls$end
-      select_gene <- input_gene
-      select_range <- paste0(
-        select_chromosome, ":", select_start, "-", select_end
+      get_genomic_external_table(
+        input_type(),
+        chr_position_ls(),
+        df_gene_ls(),
+        input_gene,
+        df_external
       )
-      
-      if (is.na(select_gene) | is.null(select_gene)) {
-        select_gene <- ""
-      }
-      
-      df_annotation <- data.frame(
-        Genomic_Region = select_range,
-        Gene = select_gene
-      )
-      
-      if (input_type() == "gene") {
-        df_annotation <- df_annotation %>%
-          dplyr::mutate(
-            GWAS = create_GWAS_gene_link(.data$Gene)
-          )
-      } else {
-        df_annotation <- df_annotation %>%
-          dplyr::mutate(
-            GWAS = create_GWAS_region_link(.data$Genomic_Region)
-          )
-      }
-      df_annotation <- df_annotation %>%
-        dplyr::mutate(
-          AD = create_Niagads_link(
-            .data$Gene, df_external %>% dplyr::filter(.data$Niagads)
-          ),
-          Agora = create_Agora_link(
-            .data$Gene, df_external %>% dplyr::filter(.data$Agora)
-          )
-        )
-      
-      df_annotation
     })
     
     ## DMR Table
     output_data_dmrs <- shiny::reactive({
-      chr_position_ls <- chr_position_ls()
-      select_chromosome <- chr_position_ls$chr
-      select_start <- chr_position_ls$start
-      select_end <- chr_position_ls$end
-      selected_datasets <- df_toplot()$Dataset
-
-      df_dmr <- df_dmr %>%
-        dplyr::filter(.data$chr == select_chromosome) %>%
-        dplyr::filter(.data$end >= select_start) %>%
-        dplyr::filter(.data$start <= select_end) %>%
-        dplyr::filter(.data$dataset %in% selected_datasets) %>%
-        dplyr::select(
-          "DMR", "dataset", sample_group = "source", "phenotype", "direction",
-          "nProbes", "pValue") %>%
-        dplyr::arrange(.data$pValue) %>%
-        dplyr::mutate(pValue = format_pvalues_column(.data$pValue),
-                      nProbes = as.integer(.data$nProbes))
+      get_genomic_range_dmrs(
+        input_type(),
+        cpg_position_ls(),
+        df_gene_ls(),
+        df_dmr,
+        df_toplot()$Dataset
+      )
     })
 
     ## CpG List Table
     df_cpg_targets <- shiny::reactive({
       # reactives and inputs
       chr_position_ls <- chr_position_ls()
-      select_chromosome <- chr_position_ls$chr
-      select_start <- chr_position_ls$start
-      select_end <- chr_position_ls$end
-
+      genome_version <- common$genome_version()
+      df_gene_ls <- df_gene_ls()
+      input_type <- input_type()
+      
       # get cpgs in target range
-      df_pos <- filter_cpg_sql_positions(
-        common$genome_version(), select_chromosome,
-        select_start, select_end)
+      df_pos <- get_genomic_range_cpgs(
+        input_type, chr_position_ls, df_gene_ls, genome_version
+      )
 
       # merge to cpg information
       if (nrow(df_pos) > 0) {
@@ -144,7 +101,6 @@ tab_gene_data_server <- function(
       # get reactives and inputs
       df_cpg_targets <- df_cpg_targets()
       chr_position_ls <- chr_position_ls()
-      select_chromosome <- chr_position_ls$chr
       toplot_df <- df_toplot()
 
       # get list of targets
@@ -174,16 +130,22 @@ tab_gene_data_server <- function(
       Sources <- toplot_df$Source
 
       # get cpg statistics
-      df_stats <- get_cpg_sql_statistics(cpgs, Datasets,
-                                         sources = Sources) %>%
-        dplyr::select(
-          "cpg", "dataset", "sample_group", "pvalue",
-          "statistics_value", "direction")
+      df_stats <- get_cpg_sql_statistics(
+        cpgs,
+        Datasets,
+        sources = Sources
+      )
+      df_stats <- dplyr::select(
+        df_stats,
+        "cpg", "dataset", "sample_group", "pvalue",
+        "statistics_value", "direction"
+      )
 
       # merge cpg positions and statistics
       df_cpg_stats <- create_statistics_table(
-        df_stats, df_labels, df_cpg_targets, table_category = "Gene") %>%
-        dplyr::arrange(.data$pValue)
+        df_stats, df_labels, df_cpg_targets, table_category = "Gene"
+      )
+      df_cpg_stats <- dplyr::arrange(df_cpg_stats, .data$pValue)
 
       return (df_cpg_stats)
     })

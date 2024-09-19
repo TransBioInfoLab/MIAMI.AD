@@ -26,8 +26,10 @@ tab_gene_UI <- function(id, df_labels, df_tracks_read) {
             inputId = ns("input_type"),
             label = shiny::tags$b("Input Method"),
             inline = FALSE,
-            choices = c("Input a gene name" = "gene",
-                        "Input a genomic region" = "range"
+            choices = c(
+              "Input a gene name" = "gene",
+              "Input a genomic region" = "range",
+              "Provide a list of genes" = "gene_list"
             )
         ),
         create_gene_conditional_input(ns, id),
