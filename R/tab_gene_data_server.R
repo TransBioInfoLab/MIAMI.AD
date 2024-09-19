@@ -59,7 +59,7 @@ tab_gene_data_server <- function(
     output_data_dmrs <- shiny::reactive({
       get_genomic_range_dmrs(
         input_type(),
-        cpg_position_ls(),
+        chr_position_ls(),
         df_gene_ls(),
         df_dmr,
         df_toplot()$Dataset

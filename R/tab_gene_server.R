@@ -69,7 +69,7 @@ tab_gene_server <- function(id, common){
       
       shiny::updateTextInput(
         inputId = "select_gene_ls",
-        value = "APOE, ZNF160, ARGN, NOTAGENE"
+        value = "APOE, ZNF160, SARS"
       )
     }, ignoreInit = TRUE)
     
