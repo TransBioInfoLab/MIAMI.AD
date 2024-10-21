@@ -75,13 +75,13 @@ tab_about_UI <- function(id) {
       ),
       shiny::h3(shiny::tags$b("2. Citation")),
       shiny::tags$p("If you find MIAMI-AD helpful, please cite our paper: "),
-      shiny::tags$p("Lukacsovich D et al. (2023) MIAMI-AD (Methylation ",
-        "in Aging and Methylation in AD): an integrative ",
-        "atlas of DNA methylation across sex, aging, and ",
+      shiny::tags$p("Lukacsovich D et al. (2024) MIAMI-AD (Methylation ",
+        "in Aging and Methylation in AD): an integrative knowledgebase that ",
+        "facilitates explorations of DNA methylation across sex, aging, and ",
         "Alzheimer's disease. ",
         shiny::tags$a(
-          href = "https://www.medrxiv.org/content/10.1101/2023.12.04.23299412v1",
-          shiny::em("bioRxiv "),
+          href = "https://pubmed.ncbi.nlm.nih.gov/39028752/",
+          shiny::em("Oxford Academic"),
           target = "_blank"
         )
         ),

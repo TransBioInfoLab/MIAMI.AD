@@ -3,7 +3,7 @@ David Lukacsovich, Deirdre O’Shea, Hanchen Huang, Wei Zhang, Juan Young, X. St
 
 ### Citation 
 
-Lukacsovich D et al. (2023) MIAMI-AD (Methylation in Aging and Methylation in AD): an integrative atlas of DNA methylation across sex, aging, and Alzheimer's disease. medRxiv https://www.medrxiv.org/content/10.1101/2023.12.04.23299412v1
+Lukacsovich D et al. (2024) MIAMI-AD (Methylation in Aging and Methylation in AD): an integrative knowledgebase that facilitates explorations of DNA methylation across sex, aging, and Alzheimer's disease. [Oxford Academic](https://academic.oup.com/database/article/doi/10.1093/database/baae061/7717099)
 
 Please also cite the original study papers in which the results were obtained.
 
